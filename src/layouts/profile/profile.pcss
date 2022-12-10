@@ -1,0 +1,74 @@
+.mfm-chat-page {
+  display: flex;
+  height: 100vh;
+
+  &__go-back-button-column {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-right: 1px solid var(--mfm-color-gray-light);
+    background: var(--mfm-color-gray-lighter);
+  }
+
+  &__main {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 60px;
+    overflow-y: auto;
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 510px;
+      box-sizing: border-box;
+    }
+  }
+
+  &__fields-container {
+    width: 100%;
+  }
+
+  &__field {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--mfm-color-gray-light);
+    padding: 14px 0;
+    font-weight: 500;
+  }
+
+  &__info-field {
+    &__name {
+      color: var(--mfm-color-asphalt);
+    }
+
+    &__value {
+      font-weight: 500;
+      color: var(--mfm-color-gray);
+    }
+  }
+
+  &__logout-button {
+    & > * {
+      color: var(--mfm-color-red) !important;
+
+      &:hover,
+      &:focus {
+        color: var(--mfm-color-red-dark) !important;
+      }
+
+      &:active {
+        color: var(--mfm-color-red-darker) !important;
+      }
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+}

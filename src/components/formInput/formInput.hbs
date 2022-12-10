@@ -1,0 +1,15 @@
+<label class="mfm-form-input">
+	<span class="mfm-form-input__label-text mfm-typography__text_xs">
+		{{label}}
+	</span>
+	{{> "input/input"
+		placeholder=placeholder
+		disabled=disabled
+		name=name
+		invalid=errorText
+		type=type
+	}}
+	<span class="mfm-form-input__error-text mfm-typography__text_xs">
+		{{errorText}}
+	</span>
+</label>

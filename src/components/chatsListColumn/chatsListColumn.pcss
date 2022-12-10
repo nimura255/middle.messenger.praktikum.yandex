@@ -1,0 +1,28 @@
+.mfm-chats-list-column {
+  display: flex;
+  flex-direction: column;
+  width: 310px;
+  border-right: 1px solid var(--mfm-color-gray-light);
+  background: var(--mfm-color-gray-lighter);
+
+  &__header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 12px;
+  }
+
+  &__search-wrapper {
+    position: relative;
+    padding: 0 12px 12px;
+
+    &:after {
+      @mixin bottom-separator-line;
+    }
+  }
+
+  &__chats-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+}

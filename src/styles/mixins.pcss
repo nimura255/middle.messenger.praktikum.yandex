@@ -1,0 +1,22 @@
+@define-mixin bottom-separator-line $gap: 12px {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: $gap;
+  right: $gap;
+  height: 1px;
+  border-radius: 1px;
+  background: var(--mfm-color-gray-light);
+}
+
+@define-mixin top-separator-line $gap: 12px {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: $gap;
+  right: $gap;
+  height: 1px;
+  border-radius: 1px;
+  background: var(--mfm-color-gray-light);
+}
+

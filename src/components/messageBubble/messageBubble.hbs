@@ -1,0 +1,26 @@
+<div class="mfm-message-bubble {{#if own}}mfm-message-bubble_own{{/if}}">
+	{{#if imageSrc}}
+		<img
+			class="mfm-message-bubble__image"
+			src="{{imageSrc}}" alt="message image"
+		/>
+	{{/if}}
+
+	<div class="mfm-message-bubble__inner">
+		{{#if messageText}}
+			<div class="mfm-message-bubble__inner__message-text mfm-typography__text_m">
+				{{messageText}}
+			</div>
+		{{/if}}
+
+		<div class="mfm-message-bubble__inner__meta-data">
+			{{#if seen}}
+				{{> "icons/doubleCheckMark"}}
+			{{/if}}
+
+			<div class="mfm-typography__text_xs">
+				{{time}}
+			</div>
+		</div>
+	</div>
+</div>

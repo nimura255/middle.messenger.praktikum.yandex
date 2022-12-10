@@ -1,0 +1,23 @@
+{{#> 'profile/profile' title='Edit password'}}
+	<form class="mfm-chat-page__form">
+		{{> 'formInput/formInput'
+			label='Curent password'
+			placeholder='Curent password'
+			type='password'
+		}}
+		{{> 'formInput/formInput'
+			label='New password'
+			placeholder='New password'
+			type='password'
+		}}
+		{{> 'formInput/formInput'
+			label='Confirm new password'
+			placeholder='Enter new password again'
+			type='password'
+		}}
+
+		{{#> 'button/button' variant="primary"}}
+			Save
+		{{/'button/button'}}
+	</form>
+{{/'profile/profile'}}

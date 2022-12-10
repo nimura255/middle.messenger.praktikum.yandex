@@ -1,0 +1,30 @@
+{
+  "name": "middle.messenger.praktikum.yandex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nimura255/middle.messenger.praktikum.yandex.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nimura255/middle.messenger.praktikum.yandex/issues"
+  },
+  "homepage": "https://github.com/nimura255/middle.messenger.praktikum.yandex#readme",
+  "scripts": {
+    "dev": "parcel src/index.hbs --no-cache",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@anikin/parcel-transformer-handlebars": "^1.0.9",
+    "parcel": "^2.8.1",
+    "postcss-import": "^15.1.0",
+    "postcss-mixins": "^9.0.4",
+    "postcss-nested": "^6.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

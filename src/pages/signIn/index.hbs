@@ -1,0 +1,21 @@
+{{#extend 'auth/auth' title='Sign in'}}
+	{{#content 'inputs'}}
+		{{> 'formInput/formInput'
+			label='Username'
+			placeholder='Enter username'
+		}}
+		{{> 'formInput/formInput'
+			label='Password'
+			type='password'
+			placeholder='Enter password'
+		}}
+	{{/content}}
+	{{#content 'buttons'}}
+		{{#> 'button/button' variant='primary'}}
+			Sign in
+		{{/'button/button'}}
+		{{#> 'button/button' variant='inline'}}
+			Sign up
+		{{/'button/button'}}
+	{{/content}}
+{{/extend}}

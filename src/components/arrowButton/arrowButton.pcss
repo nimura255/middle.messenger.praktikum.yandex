@@ -1,0 +1,33 @@
+.mfm-arrow-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--mfm-color-blue);
+  color: white;
+  cursor: pointer;
+
+  & > svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: var(--mfm-color-blue-dark);
+  }
+
+  &:active {
+    background: var(--mfm-color-blue-darker);
+  }
+
+  &_right > svg {
+    transform: rotate(0deg);
+  }
+
+  &_left > svg {
+    transform: rotate(180deg);
+  }
+}

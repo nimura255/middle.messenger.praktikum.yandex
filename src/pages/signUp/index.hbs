@@ -1,0 +1,44 @@
+{{#extend 'auth/auth' title='Sign up'}}
+	{{#content 'inputs'}}
+		{{> 'formInput/formInput'
+			label='Email'
+			placeholder='Enter email'
+			type='email'
+		}}
+		{{> 'formInput/formInput'
+			label='Username'
+			placeholder='Enter username'
+		}}
+		{{> 'formInput/formInput'
+			label='First name'
+			placeholder='Enter first name'
+		}}
+		{{> 'formInput/formInput'
+			label='Last name'
+			placeholder='Enter last name'
+		}}
+		{{> 'formInput/formInput'
+			label='Phone number'
+			placeholder='Enter phone number'
+			type='tel'
+		}}
+		{{> 'formInput/formInput'
+			label='Password'
+			type='password'
+			placeholder='Enter password'
+		}}
+		{{> 'formInput/formInput'
+			label='Confirm password'
+			type='password'
+			placeholder='Enter password again'
+		}}
+	{{/content}}
+	{{#content 'buttons'}}
+		{{#> 'button/button' variant='primary'}}
+			Sign up
+		{{/'button/button'}}
+		{{#> 'button/button' variant='inline'}}
+			Sign in
+		{{/'button/button'}}
+	{{/content}}
+{{/extend}}
