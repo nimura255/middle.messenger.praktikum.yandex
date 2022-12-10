@@ -1,4 +1,4 @@
-{{#> 'chat/chat'}}
+{{#> 'chatLayout/chatLayout'}}
 	{{#> 'chatsListColumn/chatsListColumn'}}
 		{{> 'chatsListItem/chatsListItem'
 			chatName='Excepteur sint'
@@ -67,7 +67,7 @@
 		}}
 	{{/'chatsListColumn/chatsListColumn'}}
 
-	<div class="mfm-chat-page__chat-column">
+	<main class="mfm-chat-page__chat-column">
 		<div class="mfm-chat-page__chat-column__header">
 			<div class="mfm-chat-page__chat-column__header__info">
 				{{> 'avatar/avatar'}}
@@ -109,10 +109,11 @@
 				{{> 'icons/clip'}}
 			{{/'messageFormActionButton/messageFormActionButton'}}
 			<input
+				name="message"
 				class="mfm-chat-page__chat-column__message-input-form__input mfm-typography__text_m"
 				placeholder="Input message here"
 			>
 			{{> 'arrowButton/arrowButton'}}
 		</form>
-	</div>
-{{/'chat/chat'}}
+	</main>
+{{/'chatLayout/chatLayout'}}

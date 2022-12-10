@@ -1,10 +1,12 @@
-{{#extend 'auth/auth' title='Sign in'}}
+{{#extend 'authLayout/authLayout' title='Sign in'}}
 	{{#content 'inputs'}}
 		{{> 'formInput/formInput'
+			name='login'
 			label='Username'
 			placeholder='Enter username'
 		}}
 		{{> 'formInput/formInput'
+			name='password'
 			label='Password'
 			type='password'
 			placeholder='Enter password'
@@ -14,8 +16,8 @@
 		{{#> 'button/button' variant='primary'}}
 			Sign in
 		{{/'button/button'}}
-		{{#> 'button/button' variant='inline'}}
+		{{#> 'link/link' href='#'}}
 			Sign up
-		{{/'button/button'}}
+		{{/'link/link'}}
 	{{/content}}
 {{/extend}}

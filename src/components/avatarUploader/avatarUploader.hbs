@@ -1,6 +1,11 @@
-<button class="mfm-avatar-uploader">
+<label class="mfm-avatar-uploader">
+	<input
+		name="{{name}}"
+		class="mfm-avatar-uploader__input"
+		type="file"
+	>
 	{{> 'avatar/avatar' src=src}}
 	<div class="mfm-avatar-uploader__hover-overlay mfm-typography__text_s">
 		Upload new picture
 	</div>
-</button>
+</label>

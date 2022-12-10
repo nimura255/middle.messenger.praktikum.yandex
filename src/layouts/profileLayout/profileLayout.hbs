@@ -1,15 +1,15 @@
 {{#> 'root/root' title=title}}
-	<div class="mfm-chat-page">
+	<main class="mfm-chat-page">
 		<div class="mfm-chat-page__go-back-button-column">
 			{{> 'arrowButton/arrowButton' direction='left'}}
 		</div>
 
 		<div class="mfm-chat-page__main">
 			<div class="mfm-chat-page__main__content">
-				{{> 'avatarUploader/avatarUploader' }}
+				{{> 'avatarUploader/avatarUploader' name='avatar' }}
 
 				{{> @partial-block }}
 			</div>
 		</div>
-	</div>
+	</main>
 {{/'root/root'}}
