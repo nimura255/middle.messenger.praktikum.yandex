@@ -3,25 +3,25 @@
 
 	<div class="mfm-chats-list-item__description">
 		<div class="mfm-chats-list-item__description__title-row">
-			<div class="mfm-chats-list-item__description__title-row__chat-name mfm-typography__text_l">
+			<p class="mfm-chats-list-item__description__title-row__chat-name mfm-typography__text_l">
 				{{chatName}}
-			</div>
-			<div class="mfm-chats-list-item__description__title-row__time mfm-typography__text_s">
+			</p>
+			<p class="mfm-chats-list-item__description__title-row__time mfm-typography__text_s">
 				{{lastMessageTime}}
-			</div>
+			</p>
 		</div>
 
 		<div class="mfm-chats-list-item__description__message-row">
 			<div class="mfm-chats-list-item__description__message-row__message-content mfm-typography__text_m">
 				{{#if isLastMessageOwn}}
-					<div class="mfm-chats-list-item__description__message-row__message-content__prefix">
+					<p class="mfm-chats-list-item__description__message-row__message-content__prefix">
 						You:&nbsp;
-					</div>
+					</p>
 				{{/if}}
 
-				<div class="mfm-chats-list-item__description__message-row__message-content__text">
+				<p class="mfm-chats-list-item__description__message-row__message-content__text">
 					{{lastMessage}}
-				</div>
+				</p>
 			</div>
 
 			{{#if newMessagesCount}}

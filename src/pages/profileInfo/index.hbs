@@ -1,62 +1,46 @@
 {{#> 'profileLayout/profileLayout' title='Profile'}}
-	<div class="mfm-chat-page__fields-container">
-		<div class="mfm-chat-page__field mfm-typography__text_m">
-			<div class="mfm-chat-page__info-field__name">
-				Email
-			</div>
-			<div class="mfm-chat-page__info-field__value">
-				pochta@yandex.ru
-			</div>
-		</div>
-		<div class="mfm-chat-page__field mfm-typography__text_m">
-			<div class="mfm-chat-page__info-field__name">
-				Username
-			</div>
-			<div class="mfm-chat-page__info-field__value">
-				ivanivanov
-			</div>
-		</div>
-		<div class="mfm-chat-page__field mfm-typography__text_m">
-			<div class="mfm-chat-page__info-field__name">
-				First name
-			</div>
-			<div class="mfm-chat-page__info-field__value">
-				Ivan
-			</div>
-		</div>
-		<div class="mfm-chat-page__field mfm-typography__text_m">
-			<div class="mfm-chat-page__info-field__name">
-				Last name
-			</div>
-			<div class="mfm-chat-page__info-field__value">
-				Ivanov
-			</div>
-		</div>
-		<div class="mfm-chat-page__field mfm-typography__text_m">
-			<div class="mfm-chat-page__info-field__name">
-				Phone number
-			</div>
-			<div class="mfm-chat-page__info-field__value">
-				+7 (909) 967 30 30
-			</div>
-		</div>
+	<div class="mfm-profile-page__fields-container">
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Email'
+			value='pochta@yandex.ru'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Username'
+			value='ivanivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='First name'
+			value='Ivan'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Second name'
+			value='Ivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Display name'
+			value='ivanivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Phone number'
+			value='+7 (909) 967 30 30'
+		}}
 	</div>
 
-	<div class="mfm-chat-page__fields-container">
-		<div class="mfm-chat-page__field">
+	<div class="mfm-profile-page__fields-container">
+		{{#> 'profileInfoFields/profileInfoField'}}
 			{{#> 'button/button' variant='inline'}}
 				Change personal info
 			{{/'button/button'}}
-		</div>
-		<div class="mfm-chat-page__field">
+		{{/'profileInfoFields/profileInfoField'}}
+		{{#> 'profileInfoFields/profileInfoField'}}
 			{{#> 'button/button' variant='inline'}}
 				Change password
 			{{/'button/button'}}
-		</div>
-		<div class="mfm-chat-page__field mfm-chat-page__logout-button">
+		{{/'profileInfoFields/profileInfoField'}}
+		{{#> 'profileInfoFields/profileInfoField'}}
 			{{#> 'button/button' variant='inline'}}
 				Logout
 			{{/'button/button'}}
-		</div>
+		{{/'profileInfoFields/profileInfoField'}}
 	</div>
 {{/'profileLayout/profileLayout'}}
