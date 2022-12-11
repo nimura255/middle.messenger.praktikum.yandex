@@ -1,35 +1,37 @@
 {{#> 'profileLayout/profileLayout' title='Edit profile'}}
 	<form class="mfm-profile-page__form">
-		{{> 'formInput/formInput'
-			name='email'
-			label='Email'
-			placeholder='Email'
-		}}
-		{{> 'formInput/formInput'
-			name='login'
-			label='Username'
-			placeholder='Username'
-		}}
-		{{> 'formInput/formInput'
-			name='first_name'
-			label='First name'
-			placeholder='First name'
-		}}
-		{{> 'formInput/formInput'
-			name='second_name'
-			label='Second name'
-			placeholder='Second name'
-		}}
-		{{> 'formInput/formInput'
-			name='display_name'
-			label='Display name'
-			placeholder='Display name'
-		}}
-		{{> 'formInput/formInput'
-			name='phone'
-			label='Phone number'
-			placeholder='Phone number'
-		}}
+		<fieldset>
+			{{> 'formInput/formInput'
+				name='email'
+				label='Email'
+				placeholder='Email'
+			}}
+			{{> 'formInput/formInput'
+				name='login'
+				label='Username'
+				placeholder='Username'
+			}}
+			{{> 'formInput/formInput'
+				name='first_name'
+				label='First name'
+				placeholder='First name'
+			}}
+			{{> 'formInput/formInput'
+				name='second_name'
+				label='Second name'
+				placeholder='Second name'
+			}}
+			{{> 'formInput/formInput'
+				name='display_name'
+				label='Display name'
+				placeholder='Display name'
+			}}
+			{{> 'formInput/formInput'
+				name='phone'
+				label='Phone number'
+				placeholder='Phone number'
+			}}
+		</fieldset>
 
 		{{#> 'button/button' variant="primary"}}
 			Save
