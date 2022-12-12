@@ -1,0 +1,16 @@
+{{#> "root/root" title=title}}
+	<main class="mfm-auth-page-layout">
+		<div class="mfm-auth-page-layout__form-window">
+			<h1 class="mfm-typography__text_xl">{{title}}</h1>
+
+			<form class="mfm-auth-page-layout__form-window__form">
+				<fieldset class="mfm-auth-page-layout__form-window__form__fields">
+					{{#block "inputs"}}{{/block}}
+				</fieldset>
+				<div class="mfm-auth-page-layout__form-window__form__buttons">
+					{{#block "buttons"}}{{/block}}
+				</div>
+			</form>
+		</div>
+	</main>
+{{/"root/root"}}

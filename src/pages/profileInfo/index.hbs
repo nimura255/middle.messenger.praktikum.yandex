@@ -1,0 +1,46 @@
+{{#> 'profileLayout/profileLayout' title='Profile'}}
+	<div class="mfm-profile-page__fields-container">
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Email'
+			value='pochta@yandex.ru'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Username'
+			value='ivanivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='First name'
+			value='Ivan'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Second name'
+			value='Ivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Display name'
+			value='ivanivanov'
+		}}
+		{{> 'profileInfoFields/profileInfoRecordField'
+			name='Phone number'
+			value='+7 (909) 967 30 30'
+		}}
+	</div>
+
+	<div class="mfm-profile-page__fields-container">
+		{{#> 'profileInfoFields/profileInfoField'}}
+			{{#> 'button/button' variant='inline'}}
+				Change personal info
+			{{/'button/button'}}
+		{{/'profileInfoFields/profileInfoField'}}
+		{{#> 'profileInfoFields/profileInfoField'}}
+			{{#> 'button/button' variant='inline'}}
+				Change password
+			{{/'button/button'}}
+		{{/'profileInfoFields/profileInfoField'}}
+		{{#> 'profileInfoFields/profileInfoField'}}
+			{{#> 'button/button' variant='inline'}}
+				Logout
+			{{/'button/button'}}
+		{{/'profileInfoFields/profileInfoField'}}
+	</div>
+{{/'profileLayout/profileLayout'}}

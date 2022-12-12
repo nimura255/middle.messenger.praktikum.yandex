@@ -1,0 +1,28 @@
+{{#> 'profileLayout/profileLayout' title='Edit password'}}
+	<form class="mfm-profile-page__form">
+		<fieldset>
+			{{> 'formInput/formInput'
+				name='oldPassword'
+				label='Curent password'
+				placeholder='Curent password'
+				type='password'
+			}}
+			{{> 'formInput/formInput'
+				name='newPassword'
+				label='New password'
+				placeholder='New password'
+				type='password'
+			}}
+			{{> 'formInput/formInput'
+				name='newPassword'
+				label='Confirm new password'
+				placeholder='Enter new password again'
+				type='password'
+			}}
+		</fieldset>
+
+		{{#> 'button/button' variant="primary"}}
+			Save
+		{{/'button/button'}}
+	</form>
+{{/'profileLayout/profileLayout'}}
