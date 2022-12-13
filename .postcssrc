@@ -1,7 +1,8 @@
 {
-    "plugins": {
-        "postcss-import": true,
-        "postcss-nested": true,
-        "postcss-mixins": true
-    }
+  "syntax": "postcss-scss",
+  "plugins": {
+    "postcss-import": true,
+    "postcss-nested": true,
+    "postcss-mixins": true
+  }
 }
