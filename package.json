@@ -22,6 +22,9 @@
   },
   "devDependencies": {
     "@anikin/parcel-transformer-handlebars": "1.0.9",
+    "@typescript-eslint/eslint-plugin": "5.46.1",
+    "@typescript-eslint/parser": "5.46.1",
+    "eslint": "8.29.0",
     "parcel": "2.8.1",
     "postcss-import": "15.1.0",
     "postcss-mixins": "9.0.4",
