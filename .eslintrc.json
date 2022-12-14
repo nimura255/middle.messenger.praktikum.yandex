@@ -2,6 +2,9 @@
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "project": ["tsconfig.json"]
+  },
   "rules": {
     "block-scoped-var": ["error"],
     "complexity": ["warn", 20],
@@ -15,13 +18,9 @@
     "eqeqeq": ["error", "always", {
       "null": "ignore"
     }],
-    "max-len": ["warn", 75],
     "max-params": ["error", 3],
     "no-console": "warn",
     "no-unused-vars": "off",
-    "semi": ["error", "always", {
-      "omitLastInOneLineBlock": true
-    }],
     "@typescript-eslint/no-unused-vars": ["error", {
       "args": "all",
       "argsIgnorePattern": "^_*$",
