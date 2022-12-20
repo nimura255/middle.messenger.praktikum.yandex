@@ -16,7 +16,7 @@
     "node": ">=12"
   },
   "scripts": {
-    "dev": "parcel src/index.hbs --no-cache --open",
+    "dev": "parcel src/index.html --no-cache",
     "build": "parcel build src/index.hbs --no-cache",
     "start": "node index.js",
     "lint": "eslint --fix",
@@ -37,6 +37,7 @@
     "typescript": "4.9.4"
   },
   "dependencies": {
-    "express": "4.18.2"
+    "express": "4.18.2",
+    "nanoid": "4.0.0"
   }
 }
