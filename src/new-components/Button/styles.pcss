@@ -1,0 +1,58 @@
+.mfm-button {
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+
+  &_primary,
+  &_secondary {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 12px 28px;
+  }
+
+  &_primary {
+    color: var(--mfm-color-white);
+    background: var(--mfm-color-blue);
+
+    &:hover,
+    &:focus {
+      background: var(--mfm-color-blue-dark);
+    }
+
+    &:active {
+      background: var(--mfm-color-blue-darker);
+    }
+  }
+
+  &_secondary {
+    border-color: var(--mfm-color-gray);
+    color: var(--mfm-color-asphalt);
+    background: var(--mfm-color-white);
+
+    &:hover,
+    &:focus {
+      background: var(--mfm-color-gray-light);
+    }
+
+    &:active {
+      background: var(--mfm-color-gray);
+    }
+  }
+
+  &_inline {
+    display: inline-block;
+    border: none;
+    padding: 0;
+    color: var(--mfm-color-blue);
+    background: transparent;
+
+    &:hover,
+    &:focus {
+      color: var(--mfm-color-blue-dark);
+    }
+
+    &:active {
+      color: var(--mfm-color-blue-darker);
+    }
+  }
+}

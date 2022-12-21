@@ -23,7 +23,6 @@
     "list-styles": "stylelint '**/*.pcss' --fix"
   },
   "devDependencies": {
-    "@anikin/parcel-transformer-handlebars": "1.0.9",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
     "eslint": "8.29.0",
@@ -38,6 +37,13 @@
   },
   "dependencies": {
     "express": "4.18.2",
+    "handlebars": "4.7.7",
     "nanoid": "4.0.0"
+  },
+  "alias": {
+    "$components": "./src/new-components",
+    "$core": "./src/core",
+    "$layouts": "./src/new-layouts",
+    "$pages": "./src/new-pages"
   }
 }

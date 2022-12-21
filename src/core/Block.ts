@@ -11,9 +11,9 @@ export type BaseProps = UnknownObject & {
   children?: Record<string, Block>;
 };
 
-type BlockMeta<Props = BaseProps> = {
-  props: Props;
+type BlockMeta = {
   tagName: string;
+  className?: string;
 };
 type LifecycleEvents = Values<typeof Block.LIFECYCLE_EVENTS>;
 type EventBusOfBlock<Props = BaseProps> = EventBus<
@@ -25,6 +25,12 @@ type EventBusOfBlock<Props = BaseProps> = EventBus<
     [Block.LIFECYCLE_EVENTS.RENDER]: [void];
   }
 >;
+
+type BlockWrapperParams = {
+  tagName?: string;
+  className?: string;
+};
+
 export class Block<
   Props extends BaseProps = BaseProps,
   State extends Record<string, unknown> = Record<string, unknown>
@@ -36,7 +42,7 @@ export class Block<
     RENDER: 'lifecycle:render',
   } as const;
 
-  private readonly meta: BlockMeta<Props>;
+  private readonly meta: BlockMeta;
   private wrapperElement: Nullable<HTMLElement> = null;
   protected props: Props;
   protected state = {} as State;
@@ -44,17 +50,23 @@ export class Block<
   protected id = nanoid(6);
   private eventBus: () => EventBusOfBlock<Props>;
 
-  constructor(tagName = 'div', props: Props = {} as Props) {
+  constructor(
+    props: Props = {} as Props,
+    wrapperParams: BlockWrapperParams
+  ) {
+    const { tagName = 'div', className } = wrapperParams;
+
     const eventBus =
       new EventBus<LifecycleEvents>() as EventBusOfBlock<Props>;
     const { children, propsWithoutChildren } =
       this.separateChildrenAndProps(props);
     this.meta = {
       tagName,
-      props: propsWithoutChildren,
+      className,
     };
     this.children = children;
     this.props = this.makeDependencyDataProxy(propsWithoutChildren);
+    this.state = this.makeDependencyDataProxy({} as State);
     this.eventBus = () => eventBus;
     this.registerLifecycleEvents(eventBus);
     eventBus.emit(Block.LIFECYCLE_EVENTS.INIT);
@@ -77,8 +89,8 @@ export class Block<
   }
 
   private createResources() {
-    const { tagName } = this.meta;
-    this.wrapperElement = this.createDocumentElement(tagName);
+    const { tagName, className } = this.meta;
+    this.wrapperElement = this.createDocumentElement(tagName, className);
   }
 
   private init() {
@@ -139,8 +151,14 @@ export class Block<
     const block = this.compile(this.render());
 
     this.removeEvents();
-    this.wrapperElement.innerHTML = '';
-    this.wrapperElement.appendChild(block);
+
+    if (block.childElementCount <= 1) {
+      this.wrapperElement = block.children[0] as unknown as HTMLElement;
+    } else {
+      this.wrapperElement.innerHTML = '';
+      this.wrapperElement.appendChild(block);
+    }
+
     this.addEvents();
   }
 
@@ -152,9 +170,7 @@ export class Block<
     return this.element;
   }
 
-  private makeDependencyDataProxy = <
-    Data extends Record<string, unknown> = Record<string, unknown>
-  >(
+  private makeDependencyDataProxy = <Data extends State | Props>(
     data: Data
   ): Data => {
     const get = (target: Data, propertyKey: string) => {
@@ -163,17 +179,11 @@ export class Block<
       return typeof value === 'function' ? value.bind(target) : value;
     };
 
-    const set = (
-      target: Record<string, unknown>,
-      propertyKey: string,
-      value: unknown
-    ) => {
-      const prevProps = { ...this.props } as Props;
+    const set = (target: Data, propertyKey: string, value: unknown) => {
+      const prevProps = { ...this.props };
       target[propertyKey] = value;
-      const newProps = { ...this.props } as Props;
+      const newProps = { ...this.props };
 
-      // Запускаем обновление компоненты
-      // Плохой cloneDeep, в след итерации нужно заставлять добавлять cloneDeep им самим
       this.eventBus().emit(
         Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE,
         prevProps,
@@ -183,12 +193,17 @@ export class Block<
       return true;
     };
 
-    return new Proxy(data, { get, set }) as Data;
+    return new Proxy(data, { get, set });
   };
 
-  private createDocumentElement(tagName: string) {
-    // Можно сделать метод, который через фрагменты в цикле создаёт сразу несколько блоков
-    return document.createElement(tagName);
+  private createDocumentElement(tagName: string, className?: string) {
+    const element = document.createElement(tagName);
+
+    if (className) {
+      element.className = className;
+    }
+
+    return element;
   }
 
   private addEvents = () => {

@@ -1,5 +1,8 @@
 {
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "parserOptions": {
@@ -9,23 +12,27 @@
     "block-scoped-var": ["error"],
     "complexity": ["warn", 20],
     "curly": ["error"],
-    "default-case": ["error", {
-      "commentPattern": "^no default$"
-    }],
+    "default-case": ["error", { "commentPattern": "^no default$" }],
     "default-case-last": "error",
     "dot-location": ["error", "property"],
     "dot-notation": "off",
-    "eqeqeq": ["error", "always", {
-      "null": "ignore"
-    }],
+    "eol-last": "error",
+    "eqeqeq": ["error", "always", { "null": "ignore" }],
     "max-params": ["error", 3],
     "no-console": "warn",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error", {
-      "args": "all",
-      "argsIgnorePattern": "^_*",
-      "caughtErrors": "all"
-    }],
-    "@typescript-eslint/dot-notation": "error"
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { "prefer": "type-imports" }
+    ],
+    "@typescript-eslint/dot-notation": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "args": "all",
+        "argsIgnorePattern": "^_*",
+        "caughtErrors": "all"
+      }
+    ]
   }
 }

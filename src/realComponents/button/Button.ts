@@ -1,10 +1,15 @@
 import { Block, type BaseProps } from '../../core/Block';
-import { template } from './template';
+type ButtonProps = BaseProps & {
+  className: string;
+};
 
 export class Button extends Block {
-  constructor(props: BaseProps) {
+  constructor(props: ButtonProps) {
     // Создаём враппер DOM-элемент button
-    super('div', props);
+    super(props, {
+      tagName: 'button',
+      className: props.className,
+    });
   }
 
   componentDidMount(props: BaseProps) {
@@ -12,6 +17,8 @@ export class Button extends Block {
   }
 
   render() {
-    return template;
+    return `
+      {{ child }}
+    `;
   }
 }

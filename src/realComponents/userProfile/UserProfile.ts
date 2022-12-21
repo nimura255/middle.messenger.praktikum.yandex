@@ -1,8 +1,8 @@
-import { Block, type BaseProps } from '../../core/Block';
+import { Block, type BaseProps } from '$core/Block';
 
 export class UserProfile extends Block {
   constructor(props: BaseProps) {
-    super('div', props);
+    super(props, {});
   }
 
   componentDidMount(props: BaseProps) {
