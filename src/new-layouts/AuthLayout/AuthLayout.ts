@@ -1,31 +1,25 @@
 import { Block } from '$core/Block';
+import { AuthLayoutForm } from './AuthLayoutForm';
 import type { AuthLayoutProps } from './types';
 import './styles.pcss';
 
 export class AuthLayout extends Block {
   constructor(props: AuthLayoutProps) {
-    super(props, {
-      tagName: 'main',
-      className: 'mfm-auth-page-layout',
-    });
-  }
+    const { children, events, title } = props;
 
-  // render() {
-  //   return `
-  //     <div class="mfm-auth-page-layout__form-window">
-  //       <h1 class="mfm-typography__text_xl">{{title}}</h1>
-  //
-  //       <form class="mfm-auth-page-layout__form-window__form">
-  //         <fieldset class="mfm-auth-page-layout__form-window__form__fields">
-  //           {{{inputs}}}
-  //         </fieldset>
-  //         <div class="mfm-auth-page-layout__form-window__form__buttons">
-  //           {{{buttons}}}
-  //         </div>
-  //       </form>
-  //     </div>
-  //   `;
-  // }
+    const form = new AuthLayoutForm({ children, events });
+
+    super(
+      {
+        title,
+        children: { form },
+      },
+      {
+        tagName: 'main',
+        className: 'mfm-auth-page-layout',
+      }
+    );
+  }
 
   render() {
     return `
@@ -33,14 +27,7 @@ export class AuthLayout extends Block {
         <div class="mfm-auth-page-layout__form-window">
           <h1 class="mfm-typography__text_xl">{{title}}</h1>
 
-          <form class="mfm-auth-page-layout__form-window__form">
-            <fieldset class="mfm-auth-page-layout__form-window__form__fields">
-              {{{inputs}}}
-            </fieldset>
-            <div class="mfm-auth-page-layout__form-window__form__buttons">
-              {{{buttons}}}
-            </div>
-          </form>
+          {{{form}}}
         </div>
       </main>
     `;

@@ -7,6 +7,9 @@ type UnknownObject = Record<string, unknown>;
 export type BaseProps = UnknownObject & {
   events?: {
     click?: (event: MouseEvent) => void;
+    submit?: (event: SubmitEvent) => void;
+    // click?: EventListenerOrEventListenerObject;
+    // submit?: EventListenerOrEventListenerObject;
   };
   children?: Record<string, Block>;
 };
@@ -217,7 +220,9 @@ export class Block<
     const eventNames = Object.keys(events) as Array<keyof typeof events>;
 
     eventNames.forEach((eventName) => {
-      const handler = events[eventName];
+      const handler = events[
+        eventName
+      ] as EventListenerOrEventListenerObject;
 
       if (handler) {
         element.addEventListener(eventName, handler);
@@ -236,7 +241,9 @@ export class Block<
     const eventNames = Object.keys(events) as Array<keyof typeof events>;
 
     eventNames.forEach((eventName) => {
-      const handler = events[eventName];
+      const handler = events[
+        eventName
+      ] as EventListenerOrEventListenerObject;
 
       if (handler) {
         element.removeEventListener(eventName, handler);

@@ -108,7 +108,9 @@
       "$layouts": ["new-layouts"],
       "$layouts/*": ["new-layouts/*"],
       "$pages": ["new-pages"],
-      "$pages/*": ["new-pages/*"]
+      "$pages/*": ["new-pages/*"],
+      "$utils": ["utils"],
+      "$utils/*": ["utils/*"]
     }
   }
 }
