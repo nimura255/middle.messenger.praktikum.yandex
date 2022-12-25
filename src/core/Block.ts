@@ -3,15 +3,16 @@ import { nanoid } from 'nanoid';
 import { EventBus } from './EventBus';
 
 type UnknownObject = Record<string, unknown>;
+export type BlockRef = { current: Block | null };
 
 export type BaseProps = UnknownObject & {
   events?: {
     click?: (event: MouseEvent) => void;
     submit?: (event: SubmitEvent) => void;
-    // click?: EventListenerOrEventListenerObject;
-    // submit?: EventListenerOrEventListenerObject;
+    focusout?: (event: FocusEvent) => void;
   };
   children?: Record<string, Block>;
+  ref?: BlockRef;
 };
 
 type BlockMeta = {
@@ -73,6 +74,10 @@ export class Block<
     this.eventBus = () => eventBus;
     this.registerLifecycleEvents(eventBus);
     eventBus.emit(Block.LIFECYCLE_EVENTS.INIT);
+
+    if (props.ref) {
+      props.ref.current = this as Block;
+    }
   }
 
   private registerLifecycleEvents(eventBus: EventBusOfBlock<Props>) {
@@ -135,13 +140,24 @@ export class Block<
     Object.assign(this.state, nextState);
   };
 
-  setProps = (nextProps?: Props) => {
+  setProps(nextProps?: Props): void;
+  setProps(updateCB: (oldProps: Props) => Props): void;
+
+  setProps(arg: unknown) {
+    let nextProps: Props | undefined;
+
+    if (typeof arg === 'function') {
+      nextProps = arg(this.props);
+    } else {
+      nextProps = arg as Props;
+    }
+
     if (!nextProps) {
       return;
     }
 
     Object.assign(this.props, nextProps);
-  };
+  }
 
   get element() {
     return this.wrapperElement;
@@ -151,12 +167,19 @@ export class Block<
     if (!this.wrapperElement) {
       return;
     }
+
     const block = this.compile(this.render());
 
     this.removeEvents();
 
-    if (block.childElementCount <= 1) {
-      this.wrapperElement = block.children[0] as unknown as HTMLElement;
+    if (block.childElementCount === 1) {
+      const elementToInsert = block.children[0] as unknown as HTMLElement;
+
+      if (this.wrapperElement) {
+        this.wrapperElement.replaceWith(elementToInsert);
+      }
+
+      this.wrapperElement = elementToInsert;
     } else {
       this.wrapperElement.innerHTML = '';
       this.wrapperElement.appendChild(block);
@@ -310,4 +333,8 @@ export class Block<
       blockContent.style.display = 'none';
     }
   }
+}
+
+export function createRef(): BlockRef {
+  return { current: null } as BlockRef;
 }

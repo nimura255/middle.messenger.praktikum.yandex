@@ -19,7 +19,7 @@
     "eol-last": "error",
     "eqeqeq": ["error", "always", { "null": "ignore" }],
     "max-params": ["error", 3],
-    "no-console": "warn",
+    "no-console": "error",
     "no-unused-vars": "off",
     "@typescript-eslint/consistent-type-imports": [
       "error",

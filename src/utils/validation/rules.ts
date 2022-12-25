@@ -1,27 +1,3 @@
-export function testForCyrillic(value: string) {
-  return /[а-яА-ЯёЁ]/.test(value);
-}
-
-export function testForCyrillicOnly(value: string) {
-  return /^[а-яА-ЯёЁ]*$/.test(value);
-}
-
-export function testForLatin(value: string) {
-  return /[a-zA-Z]/.test(value);
-}
-
-export function testForLatinOnly(value: string) {
-  return /^[a-zA-Z]*$/.test(value);
-}
-
-export function testForOnlyNumeric(value: string) {
-  return /\d/.test(value);
-}
-
-export function testForOnlyNumericOnly(value: string) {
-  return /^\d*$/.test(value);
-}
-
 export function testForRequired(value: string) {
   return !!value;
 }
@@ -41,16 +17,12 @@ export function testForCapitalized(value: string) {
   return testForCapitalLetter(value[0]);
 }
 
-export function testForCanContainHyphen(value: string) {
-  return !/^[A-Za-zА-Яа-яёЁ0-9-]*$/gm.test(value);
+export function testForLatinWithHyphenOnly(value: string) {
+  return /^[a-zA-Z-]*$/.test(value);
 }
 
-export function testForCanContainUnderScore(value: string) {
-  return !/^[A-Za-zА-Яа-яёЁ0-9-_]*$/gm.test(value);
-}
-
-export function testForNoSpaces(value: string) {
-  return /\S/.test(value);
+export function testForCyrillicWithHyphenOnly(value: string) {
+  return /^[а-яА-ЯёЁ-]*$/.test(value);
 }
 
 export function testForNotEntirelyNumeric(value: string) {
@@ -70,5 +42,5 @@ export function testForContainingDigit(value: string) {
 }
 
 export function testForPhoneNumber(value: string) {
-  return /^\+?\d+/.test(value);
+  return /^\+?\d+$/.test(value);
 }

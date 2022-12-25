@@ -5,8 +5,7 @@ import './styles.pcss';
 
 export class FormInput extends Block {
   constructor(props: FormInputProps) {
-    const { disabled, invalid, name, placeholder, type, ...restProps } =
-      props;
+    const { disabled, invalid, name, placeholder, type } = props;
 
     const input = new Input({
       disabled,
@@ -17,26 +16,24 @@ export class FormInput extends Block {
     });
 
     const formInputProps = {
-      ...restProps,
+      ...props,
       children: { input },
     };
-    const wrapperParam = {
-      tagName: 'label',
-      className: 'mfm-form-input',
-    };
 
-    super(formInputProps, wrapperParam);
+    super(formInputProps, {});
   }
 
   render(): string {
     return `
-      <p class="mfm-form-input__label-text mfm-typography__text_xs">
-        {{label}}
-      </p>
-      {{{input}}}
-      <p class="mfm-form-input__error-text mfm-typography__text_xs">
-        {{errorText}}
-      </p>
+      <label class="mfm-form-input">
+        <p class="mfm-form-input__label-text mfm-typography__text_xs">
+          {{label}}
+        </p>
+        {{{input}}}
+        <p class="mfm-form-input__error-text mfm-typography__text_xs">
+          {{errorText}}
+        </p>
+      </label>
     `;
   }
 }

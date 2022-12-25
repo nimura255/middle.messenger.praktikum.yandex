@@ -1,12 +1,11 @@
 import {
-  testForCanContainHyphen,
   testForCapitalized,
   testForCapitalLetter,
   testForContainingDigit,
-  testForCyrillicOnly,
+  testForCyrillicWithHyphenOnly,
   testForEmail,
   testForLatinDigitsHyphenAndUnderscore,
-  testForLatinOnly,
+  testForLatinWithHyphenOnly,
   testForMax,
   testForMin,
   testForNotEntirelyNumeric,
@@ -35,13 +34,12 @@ function createMaxLengthValidator(length: number) {
 }
 
 function validatePersonName(value: string) {
-  const isCyrillic = testForCyrillicOnly(value);
-  const isLatin = testForLatinOnly(value);
+  const isCyrillicWithHyphen = testForCyrillicWithHyphenOnly(value);
+  const isLatinWithHyphen = testForLatinWithHyphenOnly(value);
   const isCapitalized = testForCapitalized(value);
-  const hasNoSpecialSymbols = testForCanContainHyphen(value);
 
   const isValid =
-    (isCyrillic || isLatin) && isCapitalized && hasNoSpecialSymbols;
+    (isCyrillicWithHyphen || isLatinWithHyphen) && isCapitalized;
 
   return isValid ? '' : errorMessages.firstNameLastName;
 }

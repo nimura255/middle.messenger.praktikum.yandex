@@ -6,18 +6,50 @@ import { extractDataFromSubmitEvent } from '$utils/form';
 import {
   validatePasswordRequired,
   validateUsernameRequired,
+  validateEmailRequired,
+  validatePersonNameRequired,
+  validatePhoneRequired,
   FormValidator,
 } from '$utils/validation';
 
-export class SignInPage extends Block {
+export class SignUpPage extends Block {
   constructor() {
     const fieldsParams = [
+      {
+        name: 'email',
+        label: 'Email',
+        type: 'email',
+        placeholder: 'Enter email',
+        ref: createRef(),
+        rule: validateEmailRequired,
+      },
       {
         name: 'login',
         label: 'Username',
         placeholder: 'Enter username',
         ref: createRef(),
         rule: validateUsernameRequired,
+      },
+      {
+        name: 'first_name',
+        label: 'First name',
+        placeholder: 'Enter first name',
+        ref: createRef(),
+        rule: validatePersonNameRequired,
+      },
+      {
+        name: 'second_name',
+        label: 'Second name',
+        placeholder: 'Enter second name',
+        ref: createRef(),
+        rule: validatePersonNameRequired,
+      },
+      {
+        name: 'phone',
+        label: 'Phone number',
+        placeholder: 'Enter phone number',
+        ref: createRef(),
+        rule: validatePhoneRequired,
       },
       {
         name: 'password',
@@ -60,7 +92,7 @@ export class SignInPage extends Block {
     };
 
     const authLayout = new AuthLayout({
-      title: 'Sign in',
+      title: 'Sign up',
       children: { inputs, buttons },
       events: { submit: handleSubmit },
     });
