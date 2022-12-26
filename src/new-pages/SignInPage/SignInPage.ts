@@ -34,7 +34,7 @@ export class SignInPage extends Block {
     });
 
     const inputs = new FormInputs({
-      fieldsParams: Object.values(fieldsParams),
+      fieldsParams: fieldsParams,
       onFieldsBlur: (event) => {
         const target = event.target as HTMLInputElement;
         formValidator.validateField(target.name, target.value);

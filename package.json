@@ -43,6 +43,7 @@
   "alias": {
     "$components": "./src/new-components",
     "$core": "./src/core",
+    "$iconsTemplates": "./src/iconsTemplates",
     "$layouts": "./src/new-layouts",
     "$pages": "./src/new-pages",
     "$utils": "./src/utils"

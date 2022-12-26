@@ -1,7 +1,7 @@
-import { SignUpPage } from '$pages/SignUpPage';
-import { renderDOM } from '$core/renderDOM';
 import './styles/styles.pcss';
+import { ChatPage } from '$pages/ChatPage';
+import { renderDOM } from '$core/renderDOM';
 
-const signUpPage = new SignUpPage();
+const chatPage = new ChatPage();
 
-renderDOM('#app', signUpPage);
+renderDOM('#app', chatPage);

@@ -7,5 +7,5 @@ export function extractDataFromSubmitEvent(event: SubmitEvent) {
     result[name] = value;
   }
 
-  return result;
+  return result as Record<string, string>;
 }

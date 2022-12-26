@@ -33,10 +33,7 @@ export class FormInputs extends Block {
 
     super(propsWithChildren, {});
 
-    this.setState({
-      fields,
-      inputsTemplate: template,
-    });
+    this.setState({ inputsTemplate: template });
   }
 
   render(): string {

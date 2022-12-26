@@ -13,7 +13,7 @@ export class Button extends Block {
         class="mfm-button mfm-button_{{#if variant}}{{variant}}{{else}}primary{{/if}} mfm-typography__text_s"
         type="{{type}}"
       >
-        {{text}}
+        {{{text}}}
       </button>
     `;
   }

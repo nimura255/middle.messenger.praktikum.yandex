@@ -1,0 +1,28 @@
+.mfm-icon-button {
+  width: 25px;
+  height: 25px;
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+  margin: 0;
+  color: var(--mfm-color-asphalt);
+  transition-property: background-color, color;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-out;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--mfm-color-blue-light);
+  }
+
+  &_active,
+  &:active {
+    color: var(--mfm-color-blue);
+  }
+
+  & > svg {
+    width: 15px;
+    height: 15px;
+  }
+}

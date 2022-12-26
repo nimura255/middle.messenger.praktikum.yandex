@@ -105,6 +105,7 @@
       "$components/*": ["new-components/*"],
       "$core": ["core"],
       "$core/*": ["core/*"],
+      "$iconsTemplates": ["iconsTemplates"],
       "$layouts": ["new-layouts"],
       "$layouts/*": ["new-layouts/*"],
       "$pages": ["new-pages"],
