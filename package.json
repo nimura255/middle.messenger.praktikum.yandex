@@ -15,9 +15,13 @@
   "engines": {
     "node": ">=12"
   },
+  "browserslist": [
+    "last 2 versions",
+    "not dead"
+  ],
   "scripts": {
     "dev": "parcel src/index.html --no-cache",
-    "build": "parcel build src/index.hbs --no-cache",
+    "build": "parcel build src/index.html --no-cache",
     "start": "node index.js",
     "lint": "eslint --fix",
     "list-styles": "stylelint '**/*.pcss' --fix"
