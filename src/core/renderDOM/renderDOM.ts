@@ -1,4 +1,4 @@
-import type { Block } from './Block';
+import type { Block } from '$core/Block';
 
 export function renderDOM(query: string, block: Block) {
   const root = document.querySelector(query);
@@ -8,7 +8,6 @@ export function renderDOM(query: string, block: Block) {
     return null;
   }
 
-  // Можно завязаться на реализации вашего класса Block
   root.appendChild(blockContent);
   block.dispatchComponentDidMount();
 

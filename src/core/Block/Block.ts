@@ -163,7 +163,11 @@ export class Block<
       this.children = children;
     }
 
-    Object.assign(this.props, { ...propsWithoutChildren });
+    Object.assign(this.props, propsWithoutChildren);
+  }
+
+  setProp<K extends keyof Props, V extends Props[K]>(key: K, value: V) {
+    this.props[key] = value;
   }
 
   get element() {

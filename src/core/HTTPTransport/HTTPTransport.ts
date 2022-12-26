@@ -48,11 +48,6 @@ export class HTTPTransport {
     );
   };
 
-  // PUT, POST, DELETE
-
-  // options:
-  // headers — obj
-  // data — obj
   request = (
     url: string,
     options: RequestOptions = {},

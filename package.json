@@ -24,7 +24,8 @@
     "build": "parcel build src/index.html --no-cache",
     "start": "node index.js",
     "lint": "eslint --fix",
-    "list-styles": "stylelint '**/*.pcss' --fix"
+    "list-styles": "stylelint '**/*.pcss' --fix",
+    "compile": "tsc --noEmit"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.46.1",

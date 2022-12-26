@@ -39,7 +39,6 @@ export class ValidationManager {
         error: errorText,
       });
     }
-    // this.displayFieldError(name);
   };
 
   validateForm = (valuesRecord: Record<string, string>) => {
@@ -51,19 +50,4 @@ export class ValidationManager {
   get hasErrors() {
     return Object.values(this.errors).find(Boolean);
   }
-
-  // private displayFieldError = (name: string) => {
-  //   const fieldParams = this.fieldsMap.get(name);
-  //   const errorText = this.errors[name];
-  //
-  //   if (!fieldParams?.ref) {
-  //     return;
-  //   }
-  //
-  //   fieldParams.ref.current?.setProps((state) => ({
-  //     ...state,
-  //     errorText,
-  //     invalid: errorText,
-  //   }));
-  // };
 }
