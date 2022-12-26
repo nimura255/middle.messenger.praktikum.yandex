@@ -1,5 +1,6 @@
 import { Block, createRef } from '$core/Block';
 import { AuthLayout } from '$layouts/AuthLayout';
+import { setErrorTextByRef } from '$components/FormInput';
 import { FormInputs } from '$components/FormInputs';
 import { Buttons } from './Buttons';
 import { extractDataFromSubmitEvent } from '$utils/form';
@@ -9,7 +10,7 @@ import {
   validateEmailRequired,
   validatePersonNameRequired,
   validatePhoneRequired,
-  FormValidator,
+  ValidationManager,
 } from '$utils/validation';
 
 export class SignUpPage extends Block {
@@ -61,15 +62,20 @@ export class SignUpPage extends Block {
       },
     ];
 
-    const formValidator = new FormValidator({
+    const validationManager = new ValidationManager({
       fields: fieldsParams,
+      onFieldValidation: (event) => {
+        const { ref, error } = event;
+
+        setErrorTextByRef(error, ref);
+      },
     });
 
     const inputs = new FormInputs({
       fieldsParams: Object.values(fieldsParams),
       onFieldsBlur: (event) => {
         const target = event.target as HTMLInputElement;
-        formValidator.validateField(target.name, target.value);
+        validationManager.validateField(target.name, target.value);
       },
     });
     const buttons = new Buttons();
@@ -80,9 +86,9 @@ export class SignUpPage extends Block {
         string,
         string
       >;
-      formValidator.validateForm(submittedData);
+      validationManager.validateForm(submittedData);
 
-      if (formValidator.hasErrors) {
+      if (validationManager.hasErrors) {
         // eslint-disable-next-line no-console
         console.log('Validation error');
       }

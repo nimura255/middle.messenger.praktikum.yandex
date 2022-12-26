@@ -2,7 +2,7 @@ import { Block, createRef } from '$core/Block';
 import { ArrowButton } from '$components/ArrowButton';
 import { clipIcon } from '$iconsTemplates';
 import { extractDataFromSubmitEvent } from '$utils/form';
-import { validateRequired, FormValidator } from '$utils/validation';
+import { validateRequired, ValidationManager } from '$utils/validation';
 import { MessageFormActionButton } from '../MessageFormActionButton';
 import { MessageInput } from '../MessageInput';
 
@@ -18,7 +18,7 @@ export class MessageInputForm extends Block {
     const messageInputRef = createRef();
     const messageInput = new MessageInput({ ref: messageInputRef });
 
-    const formValidationManager = new FormValidator({
+    const formValidationManager = new ValidationManager({
       fields: [
         {
           name: 'message',

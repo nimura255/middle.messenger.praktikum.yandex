@@ -1,12 +1,13 @@
 import { Block, createRef } from '$core/Block';
 import { AuthLayout } from '$layouts/AuthLayout';
+import { setErrorTextByRef } from '$components/FormInput';
 import { FormInputs } from '$components/FormInputs';
 import { Buttons } from './Buttons';
 import { extractDataFromSubmitEvent } from '$utils/form';
 import {
   validatePasswordRequired,
   validateUsernameRequired,
-  FormValidator,
+  ValidationManager,
 } from '$utils/validation';
 
 export class SignInPage extends Block {
@@ -29,15 +30,20 @@ export class SignInPage extends Block {
       },
     ];
 
-    const formValidator = new FormValidator({
+    const validationManager = new ValidationManager({
       fields: fieldsParams,
+      onFieldValidation: (event) => {
+        const { ref, error } = event;
+
+        setErrorTextByRef(error, ref);
+      },
     });
 
     const inputs = new FormInputs({
       fieldsParams: fieldsParams,
       onFieldsBlur: (event) => {
         const target = event.target as HTMLInputElement;
-        formValidator.validateField(target.name, target.value);
+        validationManager.validateField(target.name, target.value);
       },
     });
     const buttons = new Buttons();
@@ -48,9 +54,9 @@ export class SignInPage extends Block {
         string,
         string
       >;
-      formValidator.validateForm(submittedData);
+      validationManager.validateForm(submittedData);
 
-      if (formValidator.hasErrors) {
+      if (validationManager.hasErrors) {
         // eslint-disable-next-line no-console
         console.log('Validation error');
       }

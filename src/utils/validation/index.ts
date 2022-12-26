@@ -7,5 +7,5 @@ export {
   validateUsernameRequired,
 } from './validators';
 export { validateFormValues } from './validateFormValues';
-export { FormValidator } from './FormValidator';
+export { ValidationManager } from './ValidationManager';
 export type { Validator, RulesTable } from './types';
