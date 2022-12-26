@@ -15,7 +15,7 @@ import {
 import { errorMessages } from './errorMessages';
 import type { Validator } from './types';
 
-function combineValidators(...validators: Validator[]) {
+export function combineValidators(...validators: Validator[]) {
   return (value: string) => {
     return validators.reduce((result, validator) => {
       return result || validator(value);

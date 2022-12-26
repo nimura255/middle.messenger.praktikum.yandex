@@ -15,9 +15,7 @@ export class AuthLayoutForm extends Block {
   render(): string {
     return `
       <form class="mfm-auth-page-layout__form-window__form">
-        <fieldset class="mfm-auth-page-layout__form-window__form__fields">
-          {{{inputs}}}
-        </fieldset>
+        {{{inputs}}}
         <div class="mfm-auth-page-layout__form-window__form__buttons">
           {{{buttons}}}
         </div>

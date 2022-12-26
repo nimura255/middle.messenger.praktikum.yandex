@@ -159,7 +159,9 @@ export class Block<
     const { children, propsWithoutChildren } =
       this.separateChildrenAndProps(nextProps);
 
-    this.children = children;
+    if (children) {
+      this.children = children;
+    }
 
     Object.assign(this.props, { ...propsWithoutChildren });
   }

@@ -37,8 +37,6 @@ export class FormInputs extends Block {
   }
 
   render(): string {
-    return `
-      ${this.state.inputsTemplate}
-    `;
+    return `<fieldset>${this.state.inputsTemplate}</fieldset>`;
   }
 }

@@ -12,7 +12,7 @@ export type ValidationManagerParams = {
 export type ValidatedFieldParams = {
   name: string;
   ref: BlockRef;
-  rule: Validator;
+  rule?: Validator;
 };
 
 export type ValidationEvent = {

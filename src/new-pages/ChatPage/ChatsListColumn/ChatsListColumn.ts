@@ -1,4 +1,5 @@
 import { Block } from '$core/Block';
+import { Link } from '$core/router';
 import { makeChildrenFromList } from '$core/makeChildrenFromList';
 import { ButtonWithChevron } from '$components/ButtonWithChevron';
 import { ChatsListItem } from '../ChatsListItem';
@@ -10,6 +11,10 @@ export class ChatsListColumn extends Block {
   constructor() {
     const profileButton = new ButtonWithChevron({
       text: 'Profile',
+    });
+    const profileLink = new Link({
+      path: '/profile',
+      children: { slot: profileButton },
     });
     const searchInput = new SearchInput({
       placeholder: 'Search',
@@ -23,7 +28,7 @@ export class ChatsListColumn extends Block {
     const propsWithChildren = {
       children: {
         ...chatsChildren,
-        profileButton,
+        profileLink,
         searchInput,
       },
     };
@@ -37,7 +42,7 @@ export class ChatsListColumn extends Block {
     return `
       <div class="mfm-chats-list-column">
         <div class="mfm-chats-list-column__header">
-          {{{profileButton}}}
+          {{{profileLink}}}
         </div>
         <div class="mfm-chats-list-column__search-wrapper">
           {{{searchInput}}}

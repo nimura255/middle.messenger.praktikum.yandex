@@ -8,7 +8,7 @@ export class Link extends Block {
     const routerLink = new RouterLink({
       className: 'mfm-link mfm-typography__text_s',
       path: props.href,
-      slot: props.text,
+      text: props.text,
     });
 
     super(

@@ -6,7 +6,7 @@ import './styles.pcss';
 export class FallbackLayout extends Block {
   constructor(props: FallbackLayoutProps) {
     const link = new Link({
-      href: '#',
+      href: '/',
       text: 'Return to main page',
     });
 

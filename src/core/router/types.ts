@@ -3,7 +3,7 @@ import type { Block, BaseProps } from '$core/Block';
 export type LinkProps = BaseProps & {
   path: string;
   className?: string;
-  slot: string;
+  slot?: string;
 };
 
 export type RouterProps = BaseProps & {

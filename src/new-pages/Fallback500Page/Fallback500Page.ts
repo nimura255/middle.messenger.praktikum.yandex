@@ -1,22 +1,14 @@
-import { Block, type BaseProps } from '$core/Block';
+import { Block } from '$core/Block';
 import { FallbackLayout } from '$layouts/FallbackLayout';
 
 export class Fallback500Page extends Block {
-  constructor(props: BaseProps) {
+  constructor() {
     const fallbackLayout = new FallbackLayout({
       code: '500',
       message: 'We are fixing the issue',
     });
 
-    super(
-      {
-        ...props,
-        children: {
-          fallbackLayout: fallbackLayout,
-        },
-      },
-      {}
-    );
+    super({ children: { fallbackLayout: fallbackLayout } }, {});
   }
 
   render() {

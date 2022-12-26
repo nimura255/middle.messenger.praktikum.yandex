@@ -25,7 +25,7 @@ export class ValidationManager {
   validateField = (name: string, value: string) => {
     const fieldValidationParams = this.fieldsMap.get(name);
 
-    if (!fieldValidationParams) {
+    if (!fieldValidationParams?.rule) {
       return;
     }
 

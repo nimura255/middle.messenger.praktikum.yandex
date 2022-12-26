@@ -28,12 +28,8 @@ export class Router extends Block {
   }
 
   private prepareRouter = () => {
-    addEventListener('popstate', (event) => {
-      const { newPath, currentPath } = event.state;
-
-      if (newPath === currentPath) {
-        return;
-      }
+    addEventListener('popstate', () => {
+      const newPath = window.location.pathname;
 
       const createPage = this.routesMap.get(newPath);
 

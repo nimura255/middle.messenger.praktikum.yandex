@@ -1,4 +1,5 @@
 import { Block } from '$core/Block';
+import { navigate } from './navigate';
 import type { LinkProps } from './types';
 
 export class Link extends Block {
@@ -8,17 +9,7 @@ export class Link extends Block {
     const handleClick = (event: MouseEvent) => {
       event.preventDefault();
 
-      const currentPath = window.location.pathname;
-
-      window.history.pushState({}, '', href);
-
-      const popStateEvent = new PopStateEvent('popstate', {
-        state: {
-          currentPath,
-          newPath: props.path,
-        },
-      });
-      dispatchEvent(popStateEvent);
+      navigate(props.path);
     };
 
     const innerProps = {
@@ -35,7 +26,8 @@ export class Link extends Block {
   render(): string {
     return `
       <a class="{{className}}" href="{{path}}">
-        {{slot}}
+        {{text}}
+        {{{slot}}}
       </a>
     `;
   }

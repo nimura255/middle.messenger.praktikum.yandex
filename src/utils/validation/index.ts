@@ -1,4 +1,5 @@
 export {
+  combineValidators,
   validateEmailRequired,
   validateRequired,
   validatePasswordRequired,
