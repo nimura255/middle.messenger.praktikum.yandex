@@ -10,7 +10,7 @@ export class Buttons extends Block {
     });
     const signInLink = new Link({
       text: 'Sign in',
-      href: '#',
+      href: '/signIn',
     });
 
     const propsWithChildren = {

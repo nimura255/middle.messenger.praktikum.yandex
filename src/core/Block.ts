@@ -156,7 +156,12 @@ export class Block<
       return;
     }
 
-    Object.assign(this.props, nextProps);
+    const { children, propsWithoutChildren } =
+      this.separateChildrenAndProps(nextProps);
+
+    this.children = children;
+
+    Object.assign(this.props, { ...propsWithoutChildren });
   }
 
   get element() {

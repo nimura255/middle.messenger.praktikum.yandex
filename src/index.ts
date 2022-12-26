@@ -2,16 +2,24 @@ import './styles/styles.pcss';
 import { ChatPage } from '$pages/ChatPage';
 import { SignUpPage } from '$pages/SignUpPage';
 import { SignInPage } from '$pages/SignInPage';
+import { Router } from '$core/router';
 import { renderDOM } from '$core/renderDOM';
 
-const chatPage = new ChatPage();
-const signInPage = new SignInPage();
-const signUpPage = new SignUpPage();
+const router = new Router({
+  routes: [
+    {
+      path: '/chat',
+      blockCreator: () => new ChatPage(),
+    },
+    {
+      path: '/signIn',
+      blockCreator: () => new SignInPage(),
+    },
+    {
+      path: '/signUp',
+      blockCreator: () => new SignUpPage(),
+    },
+  ],
+});
 
-const pagesRecord = {
-  char: chatPage,
-  signIn: signInPage,
-  signUp: signUpPage,
-};
-
-renderDOM('#app', pagesRecord.signIn);
+renderDOM('#app', router);
