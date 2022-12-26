@@ -101,15 +101,15 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "baseUrl": "src",
     "paths": {
-      "$components": ["new-components"],
-      "$components/*": ["new-components/*"],
+      "$components": ["components"],
+      "$components/*": ["components/*"],
       "$core": ["core"],
       "$core/*": ["core/*"],
       "$iconsTemplates": ["iconsTemplates"],
-      "$layouts": ["new-layouts"],
-      "$layouts/*": ["new-layouts/*"],
-      "$pages": ["new-pages"],
-      "$pages/*": ["new-pages/*"],
+      "$layouts": ["layouts"],
+      "$layouts/*": ["layouts/*"],
+      "$pages": ["pages"],
+      "$pages/*": ["pages/*"],
       "$utils": ["utils"],
       "$utils/*": ["utils/*"]
     }

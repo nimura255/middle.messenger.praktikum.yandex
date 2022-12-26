@@ -41,11 +41,11 @@
     "nanoid": "4.0.0"
   },
   "alias": {
-    "$components": "./src/new-components",
+    "$components": "./src/components",
     "$core": "./src/core",
     "$iconsTemplates": "./src/iconsTemplates",
-    "$layouts": "./src/new-layouts",
-    "$pages": "./src/new-pages",
+    "$layouts": "./src/layouts",
+    "$pages": "./src/pages",
     "$utils": "./src/utils"
   }
 }
