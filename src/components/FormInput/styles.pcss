@@ -1,0 +1,17 @@
+.mfm-form-input {
+  display: flex;
+  flex-direction: column;
+
+  &__label-text {
+    color: var(--mfm-color-gray);
+  }
+
+  &:focus-within &__label-text {
+    color: var(--mfm-color-asphalt);
+  }
+
+  &__error-text {
+    min-height: 16px;
+    color: var(--mfm-color-red);
+  }
+}

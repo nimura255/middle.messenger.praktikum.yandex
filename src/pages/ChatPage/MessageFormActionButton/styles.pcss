@@ -1,0 +1,21 @@
+.message-form-action-button {
+  display: flex;
+  padding: 6px;
+  margin: 0;
+  border: none;
+  background: none;
+  color: var(--mfm-color-gray);
+  transition: color 0.1s ease;
+  cursor: pointer;
+
+  & > svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover,
+  &:active,
+  &_active {
+    color: var(--mfm-color-blue);
+  }
+}

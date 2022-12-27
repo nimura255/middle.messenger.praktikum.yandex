@@ -1,0 +1,16 @@
+{
+  "extends": "stylelint-config-standard",
+  "ignoreFiles": [
+    "build/*"
+  ],
+  "rules": {
+    "at-rule-no-unknown": [true, {
+      "ignoreAtRules": ["mixin", "define-mixin"]
+    }],
+    "color-hex-case": "upper",
+    "color-hex-length": "long",
+    "import-notation": "string",
+    "indentation":  2,
+    "string-quotes": "single"
+  }
+}

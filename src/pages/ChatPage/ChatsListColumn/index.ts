@@ -1,0 +1,1 @@
+export { ChatsListColumn } from './ChatsListColumn';
