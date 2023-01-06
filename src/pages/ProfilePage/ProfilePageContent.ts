@@ -1,3 +1,4 @@
+import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { navigate } from '$core/router';
 import { makeChildrenFromList } from '$core/Block';
@@ -20,14 +21,14 @@ export class ProfilePageContent extends Block {
     const changeInfoButton = new ControlField({
       text: 'Change personal info',
       events: {
-        click: () => navigate('/profile/changeInfo'),
+        click: () => navigate(routes.changeInfo),
       },
     });
 
     const changePasswordButton = new ControlField({
       text: 'Change password',
       events: {
-        click: () => navigate('/profile/changePassword'),
+        click: () => navigate(routes.changePassword),
       },
     });
 

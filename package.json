@@ -47,6 +47,7 @@
   },
   "alias": {
     "$components": "./src/components",
+    "$constants": "./src/constants",
     "$core": "./src/core",
     "$iconsTemplates": "./src/iconsTemplates",
     "$layouts": "./src/layouts",

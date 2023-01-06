@@ -1,12 +1,11 @@
+import { routes } from '$constants/routes';
 import { renderDOM } from '$core/renderDOM';
 import { Router } from '$core/router';
 import { ChatPage } from '$pages/ChatPage';
 import { Fallback404Page } from '$pages/Fallback404Page';
-import { Fallback500Page } from '$pages/Fallback500Page';
 import { ProfilePage } from '$pages/ProfilePage';
 import { ProfileEditPage } from '$pages/ProfileEditPage';
 import { ProfilePasswordChangePage } from '$pages/ProfilePasswordChangePage';
-import { RootPage } from '$pages/RootPage';
 import { SignUpPage } from '$pages/SignUpPage';
 import { SignInPage } from '$pages/SignInPage';
 import './styles/styles.pcss';
@@ -14,40 +13,32 @@ import './styles/styles.pcss';
 const router = new Router({
   routes: [
     {
-      path: '/',
-      blockCreator: () => new RootPage(),
+      path: routes.messenger,
+      block: ChatPage,
     },
     {
-      path: '/chat',
-      blockCreator: () => new ChatPage(),
+      path: routes.signIn,
+      block: SignInPage,
     },
     {
-      path: '/signIn',
-      blockCreator: () => new SignInPage(),
+      path: routes.signUp,
+      block: SignUpPage,
     },
     {
-      path: '/signUp',
-      blockCreator: () => new SignUpPage(),
+      path: routes.settings,
+      block: ProfilePage,
     },
     {
-      path: '/profile',
-      blockCreator: () => new ProfilePage(),
+      path: routes.changeInfo,
+      block: ProfileEditPage,
     },
     {
-      path: '/profile/changeInfo',
-      blockCreator: () => new ProfileEditPage(),
+      path: routes.changePassword,
+      block: ProfilePasswordChangePage,
     },
     {
-      path: '/profile/changePassword',
-      blockCreator: () => new ProfilePasswordChangePage(),
-    },
-    {
-      path: '/404',
-      blockCreator: () => new Fallback404Page(),
-    },
-    {
-      path: '/500',
-      blockCreator: () => new Fallback500Page(),
+      path: '/*',
+      block: Fallback404Page,
     },
   ],
 });

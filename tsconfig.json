@@ -103,6 +103,7 @@
     "paths": {
       "$components": ["components"],
       "$components/*": ["components/*"],
+      "$constants/*": ["constants/*"],
       "$core": ["core"],
       "$core/*": ["core/*"],
       "$iconsTemplates": ["iconsTemplates"],

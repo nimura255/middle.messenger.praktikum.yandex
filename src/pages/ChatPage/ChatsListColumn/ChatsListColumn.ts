@@ -1,3 +1,4 @@
+import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { Link } from '$core/router';
 import { makeChildrenFromList } from '$core/Block';
@@ -13,7 +14,7 @@ export class ChatsListColumn extends Block {
       text: 'Profile',
     });
     const profileLink = new Link({
-      path: '/profile',
+      path: routes.settings,
       children: { slot: profileButton },
     });
     const searchInput = new SearchInput({

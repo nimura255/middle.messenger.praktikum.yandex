@@ -1,3 +1,4 @@
+import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { makeChildrenFromList } from '$core/Block';
 import { ListItem } from './ListItem';
@@ -6,36 +7,28 @@ export class RootPage extends Block {
   constructor() {
     const linksParams = [
       {
-        path: '/signIn',
+        path: routes.signIn,
         name: 'Sign in',
       },
       {
-        path: '/signUp',
+        path: routes.signUp,
         name: 'Sign up',
       },
       {
-        path: '/chat',
+        path: routes.messenger,
         name: 'Chat',
       },
       {
-        path: '/profile',
+        path: routes.settings,
         name: 'Profile info',
       },
       {
-        path: '/profile/changeInfo',
+        path: routes.changeInfo,
         name: 'Profile edit',
       },
       {
-        path: '/profile/changePassword',
+        path: routes.changePassword,
         name: 'Password edit',
-      },
-      {
-        path: '/404',
-        name: '404',
-      },
-      {
-        path: '/500',
-        name: '500',
       },
     ];
 
