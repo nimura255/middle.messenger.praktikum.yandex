@@ -23,7 +23,6 @@ function makeRegExpFromPath(path: string) {
 }
 
 export class Router extends Block {
-  // routesMap: Map<string, typeof Block<Record<string, unknown>>>;
   routes: Array<RouterRoutesListItem>;
 
   constructor(props: RouterProps) {
@@ -51,11 +50,7 @@ export class Router extends Block {
 
     if (pageConstructor) {
       const block = new pageConstructor({}, {});
-
-      this.setProps((props) => ({
-        ...props,
-        children: { page: block },
-      }));
+      this.setProp('children', { page: block });
     }
   }
 
@@ -68,6 +63,6 @@ export class Router extends Block {
   }
 
   render(): string {
-    return '<div>{{{page}}}</div>';
+    return '{{{page}}}';
   }
 }

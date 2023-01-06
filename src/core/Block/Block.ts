@@ -167,6 +167,9 @@ export class Block<
   }
 
   setProp<K extends keyof Props, V extends Props[K]>(key: K, value: V) {
+    if (key === 'children') {
+      this.children = value as typeof this.children;
+    }
     this.props[key] = value;
   }
 
@@ -179,9 +182,10 @@ export class Block<
       return;
     }
 
-    const block = this.compile(this.render());
-
     this.removeEvents();
+    this.wrapperElement.innerHTML = '';
+
+    const block = this.compile(this.render());
 
     if (block.childElementCount === 1) {
       const elementToInsert = block.children[0] as unknown as HTMLElement;
@@ -192,7 +196,6 @@ export class Block<
 
       this.wrapperElement = elementToInsert;
     } else {
-      this.wrapperElement.innerHTML = '';
       this.wrapperElement.appendChild(block);
     }
 
