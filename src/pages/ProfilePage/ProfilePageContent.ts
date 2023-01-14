@@ -4,6 +4,8 @@ import { navigate } from '$core/router';
 import { makeChildrenFromList } from '$core/Block';
 import { AvatarUploader } from '$components/AvatarUploader';
 import { ProfileInfoRecordField } from '$components/profileFields';
+import { appController } from '$controllers/app';
+import { authController } from '$controllers/auth';
 import { ControlField } from './ControlField';
 import { mockFields } from './constants';
 
@@ -34,6 +36,13 @@ export class ProfilePageContent extends Block {
 
     const logoutButton = new ControlField({
       text: 'Logout',
+      events: {
+        click: async () => {
+          appController.setLoadingSpinnerStatus(true);
+          await authController.logOut();
+          appController.setLoadingSpinnerStatus(false);
+        },
+      },
     });
 
     const { template: infoFieldsTemplate, children: infoFieldsRecord } =

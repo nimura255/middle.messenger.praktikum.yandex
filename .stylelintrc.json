@@ -11,6 +11,7 @@
     "color-hex-length": "long",
     "import-notation": "string",
     "indentation":  2,
-    "string-quotes": "single"
+    "string-quotes": "single",
+    "selector-class-pattern": "^[a-z_-]+$"
   }
 }

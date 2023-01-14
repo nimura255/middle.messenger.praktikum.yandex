@@ -28,6 +28,7 @@
     "compile": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
     "eslint": "8.29.0",
@@ -46,12 +47,15 @@
     "nanoid": "4.0.0"
   },
   "alias": {
+    "$api": "./src/api",
     "$components": "./src/components",
     "$constants": "./src/constants",
+    "$controllers": "./src/controllers",
     "$core": "./src/core",
     "$iconsTemplates": "./src/iconsTemplates",
     "$layouts": "./src/layouts",
     "$pages": "./src/pages",
+    "$store": "./src/store",
     "$utils": "./src/utils"
   }
 }

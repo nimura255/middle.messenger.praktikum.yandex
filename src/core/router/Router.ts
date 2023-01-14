@@ -1,19 +1,6 @@
-import { type BaseProps, Block } from '$core/Block';
-// import type { RouterProps } from './types';
-
-type RouterProps = BaseProps & {
-  routes: RouteParams[];
-};
-
-type RouteParams = {
-  path: string;
-  block: typeof Block<Record<string, unknown>>;
-};
-
-type RouterRoutesListItem = {
-  pathRegExp: RegExp;
-  block: typeof Block<Record<string, unknown>>;
-};
+import { Block } from '$core/Block';
+import type { RouterProps, RouterRoutesListItem } from './types';
+import { navigate } from './navigate';
 
 function makeRegExpFromPath(path: string) {
   const tokens = path.split('/');
@@ -24,6 +11,7 @@ function makeRegExpFromPath(path: string) {
 
 export class Router extends Block {
   routes: Array<RouterRoutesListItem>;
+  currentPath: string | undefined;
 
   constructor(props: RouterProps) {
     const { routes } = props;
@@ -32,8 +20,9 @@ export class Router extends Block {
     super({ children: {}, routes }, {});
 
     this.prepareRouter();
-    this.routes = routes.map(({ path, block }) => ({
+    this.routes = routes.map(({ path, block, constraint }) => ({
       pathRegExp: makeRegExpFromPath(path),
+      constraint,
       block,
     }));
     this.handleRouteChange(initPath);
@@ -46,20 +35,23 @@ export class Router extends Block {
   };
 
   private handleRouteChange(newPath: string) {
-    const pageConstructor = this.findRoute(newPath);
+    const route = this.findRoute(newPath);
 
-    if (pageConstructor) {
-      const block = new pageConstructor({}, {});
-      this.setProp('children', { page: block });
+    if (!route || (route.constraint && !route.constraint())) {
+      navigate(this.currentPath || '/');
+      return;
     }
+
+    const { block: pageConstructor } = route;
+    const block = new pageConstructor({}, {});
+    this.setProp('children', { page: block });
+    this.currentPath = newPath;
   }
 
   private findRoute(path: string) {
-    const matchingRoute = this.routes.find((route) => {
+    return this.routes.find((route) => {
       return route.pathRegExp.test(path);
     });
-
-    return matchingRoute?.block;
   }
 
   render(): string {

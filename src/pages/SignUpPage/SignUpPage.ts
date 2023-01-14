@@ -2,6 +2,8 @@ import { Block, createRef } from '$core/Block';
 import { AuthLayout } from '$layouts/AuthLayout';
 import { setErrorTextByRef } from '$components/FormInput';
 import { FormInputs } from '$components/FormInputs';
+import { appController } from '$controllers/app';
+import { authController } from '$controllers/auth';
 import { Buttons } from './Buttons';
 import { extractDataFromSubmitEvent } from '$utils/form';
 import {
@@ -12,6 +14,15 @@ import {
   validatePhoneRequired,
   ValidationManager,
 } from '$utils/validation';
+
+type FormData = {
+  first_name: string;
+  second_name: string;
+  login: string;
+  email: string;
+  password: string;
+  phone: string;
+};
 
 export class SignUpPage extends Block {
   constructor() {
@@ -80,21 +91,22 @@ export class SignUpPage extends Block {
     });
     const buttons = new Buttons();
 
-    const handleSubmit = (event: SubmitEvent) => {
+    const handleSubmit = async (event: SubmitEvent) => {
       event.preventDefault();
-      const submittedData = extractDataFromSubmitEvent(event) as Record<
-        string,
-        string
-      >;
+      const submittedData = extractDataFromSubmitEvent(event) as FormData;
       validationManager.validateForm(submittedData);
 
       if (validationManager.hasErrors) {
-        // eslint-disable-next-line no-console
-        console.log('Validation error');
+        return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log(submittedData);
+      appController.setLoadingSpinnerStatus(true);
+      const errorText = await authController.signUp(submittedData);
+      appController.setLoadingSpinnerStatus(false);
+
+      if (errorText) {
+        validationManager.insertError('password', errorText);
+      }
     };
 
     const authLayout = new AuthLayout({

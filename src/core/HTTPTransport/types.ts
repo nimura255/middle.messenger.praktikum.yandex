@@ -4,3 +4,9 @@ export enum HTTPMethod {
   DELETE = 'DELETE',
   PUT = 'PUT',
 }
+
+export type ResponseError = {
+  code: number;
+  response: object;
+  responseText: string;
+};

@@ -7,6 +7,7 @@ export { doubleCheckMarkIcon } from './doubleCheckMark';
 export { fileIcon } from './file';
 export { garbageIcon } from './garbage';
 export { leaveIcon } from './leave';
+export { loadingSpinner } from './loadingSpinner';
 export { locationIcon } from './location';
 export { pictureIcon } from './picture';
 export { searchIcon } from './search';

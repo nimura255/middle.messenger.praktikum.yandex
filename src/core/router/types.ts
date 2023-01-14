@@ -10,7 +10,16 @@ export type RouterProps = BaseProps & {
   routes: RouteParams[];
 };
 
+type RouteConstraint = () => boolean;
+
 type RouteParams = {
   path: string;
-  blockCreator: () => Block;
+  block: typeof Block<Record<string, unknown>>;
+  constraint?: RouteConstraint;
+};
+
+export type RouterRoutesListItem = {
+  pathRegExp: RegExp;
+  block: typeof Block<Record<string, unknown>>;
+  constraint?: RouteConstraint;
 };
