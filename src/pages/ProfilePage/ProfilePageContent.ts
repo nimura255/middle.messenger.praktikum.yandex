@@ -6,18 +6,22 @@ import { AvatarUploader } from '$components/AvatarUploader';
 import { ProfileInfoRecordField } from '$components/profileFields';
 import { appController } from '$controllers/app';
 import { authController } from '$controllers/auth';
+import { store } from '$store';
 import { ControlField } from './ControlField';
-import { mockFields } from './constants';
+import { fieldsParams } from './constants';
 
 export class ProfilePageContent extends Block {
+  infoFields: ProfileInfoRecordField[] = [];
+  avatarUploader: AvatarUploader;
+
   constructor() {
     const avatarUploader = new AvatarUploader({
       name: 'avatar',
       src: '',
     });
 
-    const infoFields = mockFields.map((params) => {
-      return new ProfileInfoRecordField(params);
+    const infoFields = fieldsParams.map(({ label }) => {
+      return new ProfileInfoRecordField({ name: label, value: '' });
     });
 
     const changeInfoButton = new ControlField({
@@ -60,6 +64,26 @@ export class ProfilePageContent extends Block {
     };
 
     super(propsWithChildren, {});
+
+    this.infoFields = infoFields;
+    this.avatarUploader = avatarUploader;
+  }
+
+  componentDidMount() {
+    store.subscribeWithImmediateCall((state) => {
+      const { user } = state;
+
+      if (!user) {
+        return;
+      }
+
+      this.infoFields.map((fieldBlock, index) => {
+        const fieldName = fieldsParams[index].name;
+        const fieldValue = user[fieldName];
+        fieldBlock.setProp('value', fieldValue);
+      });
+      this.avatarUploader.setProp('src', user.avatar);
+    });
   }
 
   render(): string {

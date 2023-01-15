@@ -27,6 +27,7 @@ type EventBusOfBlock<Props = BaseProps> = EventBus<
     [Block.LIFECYCLE_EVENTS.COMPONENT_DID_MOUNT]: [Props];
     [Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE]: [Props, Props];
     [Block.LIFECYCLE_EVENTS.RENDER]: [void];
+    [Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT]: [void];
   }
 >;
 
@@ -43,6 +44,7 @@ export class Block<
     INIT: 'lifecycle:init',
     COMPONENT_DID_MOUNT: 'lifecycle:component-did-mount',
     COMPONENT_DID_UPDATE: 'lifecycle:component-did-update',
+    COMPONENT_WILL_UNMOUNT: 'lifecycle:component-will-unmount',
     RENDER: 'lifecycle:render',
   } as const;
 
@@ -68,7 +70,7 @@ export class Block<
       tagName,
       className,
     };
-    this.children = children;
+    this.setChildren(children);
     this.props = this.makeDependencyDataProxy(propsWithoutChildren);
     this.state = this.makeDependencyDataProxy({} as State);
     this.eventBus = () => eventBus;
@@ -91,6 +93,10 @@ export class Block<
       this.innerComponentDidUpdate.bind(this)
     );
     eventBus.on(
+      Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT,
+      this.innerComponentWillUnmount.bind(this)
+    );
+    eventBus.on(
       Block.LIFECYCLE_EVENTS.RENDER,
       this.innerRender.bind(this)
     );
@@ -108,12 +114,6 @@ export class Block<
 
   private innerComponentDidMount(props: Props) {
     this.componentDidMount(props);
-
-    if (this.children) {
-      Object.values(this.children).forEach((child) => {
-        child.dispatchComponentDidMount();
-      });
-    }
   }
 
   componentDidMount(_props: Props) {
@@ -125,6 +125,24 @@ export class Block<
       Block.LIFECYCLE_EVENTS.COMPONENT_DID_MOUNT,
       this.props
     );
+  }
+
+  private innerComponentWillUnmount() {
+    this.componentWillUnmount();
+
+    if (this.children) {
+      Object.values(this.children).forEach((child) => {
+        child.dispatchComponentWillUnmount();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    //
+  }
+
+  dispatchComponentWillUnmount() {
+    this.eventBus().emit(Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT);
   }
 
   private innerComponentDidUpdate(oldProps: Props, newProps: Props) {
@@ -160,7 +178,7 @@ export class Block<
       this.separateChildrenAndProps(nextProps);
 
     if (children) {
-      this.children = children;
+      this.setChildren(children);
     }
 
     Object.assign(this.props, propsWithoutChildren);
@@ -168,9 +186,36 @@ export class Block<
 
   setProp<K extends keyof Props, V extends Props[K]>(key: K, value: V) {
     if (key === 'children') {
-      this.children = value as typeof this.children;
+      this.setChildren(value as typeof this.children);
     }
+
     this.props[key] = value;
+  }
+
+  private setChildren(
+    children: Record<string, Block<Props, State>> | undefined
+  ) {
+    for (const key in this.children) {
+      if (
+        !children ||
+        !children[key] ||
+        children[key] !== this.children[key]
+      ) {
+        this.children[key].dispatchComponentWillUnmount();
+      }
+    }
+
+    for (const key in children) {
+      if (
+        !this.children ||
+        !this.children[key] ||
+        children[key] !== this.children[key]
+      ) {
+        children[key].dispatchComponentDidMount();
+      }
+    }
+
+    this.children = children;
   }
 
   get element() {
@@ -220,21 +265,25 @@ export class Block<
     };
 
     const set = (target: Data, propertyKey: string, value: unknown) => {
-      const prevProps = { ...this.props };
-      target[propertyKey] = value;
-      const newProps = { ...this.props };
+      if (target[propertyKey] !== value) {
+        const prevProps = { ...this.props };
+        target[propertyKey] = value;
+        const newProps = { ...this.props };
 
-      this.eventBus().emit(
-        Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE,
-        prevProps,
-        newProps
-      );
+        this.eventBus().emit(
+          Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE,
+          prevProps,
+          newProps
+        );
+      }
 
       return true;
     };
 
     return new Proxy(data, { get, set });
   };
+
+  // private makeChildrenProxy
 
   private createDocumentElement(tagName: string, className?: string) {
     const element = document.createElement(tagName);

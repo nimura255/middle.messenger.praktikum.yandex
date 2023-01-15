@@ -37,6 +37,11 @@ export class Store<State extends IndexedObject> {
     this.eventBus.on(StoreEvents.Updated, callback);
   };
 
+  subscribeWithImmediateCall = (callback: (state: State) => void) => {
+    this.subscribe(callback);
+    callback(this.state);
+  };
+
   getState = () => {
     return this.state;
   };

@@ -1,8 +1,6 @@
 import { authAPI } from '$api/auth';
 import { isResponseError } from '$core/HTTPTransport';
-import { navigate } from '$core/router';
 import { store } from '$store';
-import { routes } from '$constants/routes';
 import type { SignInParams, SignUpParams } from './types';
 
 function handleAccessError(error: unknown) {
@@ -14,7 +12,6 @@ function handleAccessError(error: unknown) {
 
   if (code === 403) {
     store.reset();
-    navigate(routes.signIn);
   }
 }
 
@@ -79,7 +76,6 @@ export const authController = {
         phone,
         avatar,
       });
-      navigate(routes.messenger);
     } catch (error) {
       handleAccessError(error);
     }
@@ -87,6 +83,5 @@ export const authController = {
   async logOut() {
     await authAPI.logOut();
     store.reset();
-    navigate(routes.signIn);
   },
 };

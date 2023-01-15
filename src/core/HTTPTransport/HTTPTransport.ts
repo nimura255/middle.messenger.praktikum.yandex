@@ -4,11 +4,25 @@ import { queryStringify } from './utils';
 import { HTTPMethod } from './types';
 
 type RequestOptions = {
-  data?: Record<string, string>;
+  data?: Record<string, string> | FormData;
   timeout?: number;
   method?: HTTPMethod;
   headers?: Record<string, string>;
 };
+
+type Response<Data> = {
+  code: number;
+  data: Data;
+  dataText: string;
+};
+
+function parseResponse(responseString: string) {
+  try {
+    return JSON.parse(responseString);
+  } catch {
+    return responseString;
+  }
+}
 
 export class HTTPTransport {
   private readonly baseUrl: string;
@@ -17,62 +31,51 @@ export class HTTPTransport {
     this.baseUrl = urlJoin(process.env.API_ROOT || '', routePrefix);
   }
 
-  get = <Response>(
-    route: string,
-    options: RequestOptions = {}
-  ): Promise<Response> => {
+  get = <Data>(route: string, options: RequestOptions = {}) => {
     const { data, timeout } = options;
     let routeWithParams = route;
 
-    if (data) {
-      routeWithParams = route + queryStringify(data);
+    if (data && isObject(data)) {
+      routeWithParams =
+        route + queryStringify(data as IndexedObject<string>);
     }
 
-    return this.request(
+    return this.request<Data>(
       routeWithParams,
       { ...options, method: HTTPMethod.GET },
       timeout
     );
   };
 
-  post = <Response>(
-    route: string,
-    options: RequestOptions = {}
-  ): Promise<Response> => {
-    return this.request(
+  post = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
       route,
       { ...options, method: HTTPMethod.POST },
       options.timeout
     );
   };
 
-  put = <Response>(
-    route: string,
-    options: RequestOptions = {}
-  ): Promise<Response> => {
-    return this.request(
+  put = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
       route,
       { ...options, method: HTTPMethod.PUT },
       options.timeout
     );
   };
 
-  delete = <Response>(
-    route: string,
-    options: RequestOptions = {}
-  ): Promise<Response> => {
-    return this.request(
+  delete = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
       route,
       { ...options, method: HTTPMethod.DELETE },
       options.timeout
     );
   };
 
-  request = <Response>(
+  request = <Data>(
     route: string,
     options: RequestOptions = {},
     timeout = 5000
-  ): Promise<Response> => {
+  ): Promise<Response<Data>> => {
     const url = urlJoin(this.baseUrl, route);
     const { method = HTTPMethod.GET, data, headers } = options;
 
@@ -83,15 +86,16 @@ export class HTTPTransport {
 
       xhr.onload = function () {
         const stringStatus = `${xhr.status}`;
+        const responseData = {
+          code: xhr.status,
+          data: parseResponse(xhr.response || '{}'),
+          dataText: xhr.responseText || '',
+        };
 
         if (stringStatus.startsWith('4') || stringStatus.startsWith('5')) {
-          reject({
-            code: xhr.status,
-            response: JSON.parse(xhr.response || '{}'),
-            responseText: xhr.responseText || '',
-          });
+          reject(responseData);
         } else {
-          resolve(xhr as Response);
+          resolve(responseData);
         }
       };
 
