@@ -4,8 +4,10 @@ import type { FormInputProps } from './types';
 import './styles.pcss';
 
 export class FormInput extends Block {
+  input: Input;
+
   constructor(props: FormInputProps) {
-    const { disabled, invalid, name, placeholder, type } = props;
+    const { disabled, invalid, name, placeholder, type, value } = props;
 
     const input = new Input({
       disabled,
@@ -13,6 +15,7 @@ export class FormInput extends Block {
       name,
       placeholder,
       type,
+      value,
     });
 
     const formInputProps = {
@@ -21,6 +24,21 @@ export class FormInput extends Block {
     };
 
     super(formInputProps, {});
+
+    this.input = input;
+  }
+
+  componentDidUpdate(_: FormInputProps, newProps: FormInputProps) {
+    const { disabled, invalid, name, placeholder, type, value } = newProps;
+
+    this.input.setProps({
+      disabled,
+      invalid,
+      name,
+      placeholder,
+      type,
+      value,
+    });
   }
 
   render(): string {

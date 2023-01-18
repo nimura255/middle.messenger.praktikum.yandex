@@ -11,7 +11,7 @@ import { ProfileEditPage } from '$pages/ProfileEditPage';
 import { ProfilePasswordChangePage } from '$pages/ProfilePasswordChangePage';
 import { SignUpPage } from '$pages/SignUpPage';
 import { SignInPage } from '$pages/SignInPage';
-import { store } from '$store';
+import { store, type StoreState } from '$store';
 import './styles/styles.pcss';
 
 const authOnlyRoutes = [
@@ -68,36 +68,44 @@ class App extends Block {
     );
   }
 
-  handleRoutesRestrictions = () => {
-    store.subscribeWithImmediateCall(({ user }) => {
-      const currentPathname = window.location.pathname;
-      const isAuthOnlyPathname = authOnlyRoutes.includes(currentPathname);
-      const isNonAuthOnlyPathname =
-        nonAuthOnlyRoutes.includes(currentPathname);
+  handleRoutesRestrictions = (storeState: Partial<StoreState>) => {
+    const { user } = storeState;
 
-      if (!user && isAuthOnlyPathname) {
-        navigate(nonAuthOnlyRoutes[0]);
-      } else if (user && isNonAuthOnlyPathname) {
-        navigate(authOnlyRoutes[0]);
-      }
-    });
+    const currentPathname = window.location.pathname;
+    const isAuthOnlyPathname = authOnlyRoutes.includes(currentPathname);
+    const isNonAuthOnlyPathname =
+      nonAuthOnlyRoutes.includes(currentPathname);
+
+    if (!user && isAuthOnlyPathname) {
+      navigate(nonAuthOnlyRoutes[0]);
+    } else if (user && isNonAuthOnlyPathname) {
+      navigate(authOnlyRoutes[0]);
+    }
   };
 
-  connectLoaderStateToStore = () => {
-    store.subscribe(({ showLoadingSpinner }) => {
-      if (showLoadingSpinner !== this.props.showLoadingSpinner) {
-        this.setProp('showLoadingSpinner', showLoadingSpinner);
-      }
-    });
+  connectLoaderStateToStore = (storeState: Partial<StoreState>) => {
+    const { showLoadingSpinner } = storeState;
+
+    if (
+      typeof showLoadingSpinner === 'boolean' &&
+      showLoadingSpinner !== this.props.showLoadingSpinner
+    ) {
+      this.setProp('showLoadingSpinner', showLoadingSpinner);
+    }
   };
 
   async componentDidMount() {
-    this.connectLoaderStateToStore();
+    store.subscribeWithImmediateCall(this.connectLoaderStateToStore);
 
     await appController.loadInitData();
     this.setProp('children', { ...this.children, router });
 
-    this.handleRoutesRestrictions();
+    store.subscribeWithImmediateCall(this.handleRoutesRestrictions);
+  }
+
+  componentWillUnmount() {
+    store.unsubscribe(this.connectLoaderStateToStore);
+    store.unsubscribe(this.handleRoutesRestrictions);
   }
 
   render(): string {

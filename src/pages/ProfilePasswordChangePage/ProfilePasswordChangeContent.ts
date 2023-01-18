@@ -1,15 +1,21 @@
-import { Block, createRef } from '$core/Block';
+import { Button } from '$components/Button';
 import { setErrorTextByRef } from '$components/FormInput';
 import { FormInputs } from '$components/FormInputs';
+import { userController } from '$controllers/user';
+import { Block, createRef } from '$core/Block';
 import { extractDataFromSubmitEvent } from '$utils/form';
 import {
   combineValidators,
   validatePasswordRequired,
   ValidationManager,
 } from '$utils/validation';
-import { Button } from '$components/Button';
+import type { FieldParams, FormValues } from './types';
 
 export class ProfilePasswordChangeContent extends Block {
+  fieldsParams: FieldParams[];
+  validationManager: ValidationManager;
+  formInputs: FormInputs;
+
   constructor() {
     let newPasswordValue = '';
 
@@ -24,8 +30,8 @@ export class ProfilePasswordChangeContent extends Block {
     const fieldsParams = [
       {
         name: 'oldPassword',
-        label: 'Curent password',
-        placeholder: 'Curent password',
+        label: 'Current password',
+        placeholder: 'Current password',
         type: 'password',
         ref: createRef(),
         rule: validatePasswordRequired,
@@ -36,7 +42,7 @@ export class ProfilePasswordChangeContent extends Block {
         placeholder: 'New password',
         type: 'password',
         ref: createRef(),
-        validatePasswordRequired,
+        rule: validatePasswordRequired,
       },
       {
         name: 'newPasswordConfirm',
@@ -81,32 +87,39 @@ export class ProfilePasswordChangeContent extends Block {
       }
     };
 
-    const handleSubmit = (event: SubmitEvent) => {
-      event.preventDefault();
-      const submittedData = extractDataFromSubmitEvent(event) as Record<
-        string,
-        string
-      >;
-      validationManager.validateForm(submittedData);
-
-      if (validationManager.hasErrors) {
-        // eslint-disable-next-line no-console
-        console.log('Validation error');
-      }
-
-      // eslint-disable-next-line no-console
-      console.log(submittedData);
-    };
-
     const propsWithChildren = {
       children: { fields: formInputs, saveButton },
-      events: {
-        input: handlePasswordInput,
-        submit: handleSubmit,
-      },
+      events: { input: handlePasswordInput },
     };
 
     super(propsWithChildren, {});
+
+    this.fieldsParams = fieldsParams;
+    this.validationManager = validationManager;
+    this.formInputs = formInputs;
+  }
+
+  handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+    const submittedData = extractDataFromSubmitEvent(event) as FormValues;
+    this.validationManager.validateForm(submittedData);
+
+    if (this.validationManager.hasErrors) {
+      return;
+    }
+
+    const errorText = await userController.changePassword(submittedData);
+
+    if (errorText) {
+      this.setProp('submitError', errorText);
+    }
+  };
+
+  componentDidMount() {
+    this.setProp('events', {
+      ...this.props.events,
+      submit: this.handleSubmit,
+    });
   }
 
   render(): string {

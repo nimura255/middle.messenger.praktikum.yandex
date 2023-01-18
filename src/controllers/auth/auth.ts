@@ -17,10 +17,10 @@ function handleAccessError(error: unknown) {
 
 function handleAuthError(error: unknown) {
   if (isResponseError(error)) {
-    const { code, response } = error;
+    const { code, data } = error;
 
     if (code === 401) {
-      return (response as Record<string, string>).reason;
+      return (data as Record<string, string>).reason;
     }
   }
 
@@ -78,6 +78,7 @@ export const authController = {
       });
     } catch (error) {
       handleAccessError(error);
+      throw error;
     }
   },
   async logOut() {

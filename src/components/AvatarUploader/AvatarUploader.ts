@@ -25,7 +25,7 @@ export class AvatarUploader extends Block {
     newProps: AvatarUploaderProps
   ) {
     if (newProps.src) {
-      this.avatar.setProp('src', newProps.src);
+      this.avatar.setProp('src', newProps.src || '');
     }
   }
 

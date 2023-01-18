@@ -2,23 +2,19 @@ import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { navigate } from '$core/router';
 import { makeChildrenFromList } from '$core/Block';
-import { AvatarUploader } from '$components/AvatarUploader';
 import { ProfileInfoRecordField } from '$components/profileFields';
 import { appController } from '$controllers/app';
 import { authController } from '$controllers/auth';
-import { store } from '$store';
+import { store, type StoreState } from '$store';
+import { AvatarUploader } from './AvatarUploader';
 import { ControlField } from './ControlField';
 import { fieldsParams } from './constants';
 
 export class ProfilePageContent extends Block {
   infoFields: ProfileInfoRecordField[] = [];
-  avatarUploader: AvatarUploader;
 
   constructor() {
-    const avatarUploader = new AvatarUploader({
-      name: 'avatar',
-      src: '',
-    });
+    const avatarUploader = new AvatarUploader();
 
     const infoFields = fieldsParams.map(({ label }) => {
       return new ProfileInfoRecordField({ name: label, value: '' });
@@ -66,24 +62,28 @@ export class ProfilePageContent extends Block {
     super(propsWithChildren, {});
 
     this.infoFields = infoFields;
-    this.avatarUploader = avatarUploader;
   }
 
-  componentDidMount() {
-    store.subscribeWithImmediateCall((state) => {
-      const { user } = state;
+  connectInfoFieldsToStore = (state: Partial<StoreState>) => {
+    const { user } = state;
 
-      if (!user) {
-        return;
-      }
+    if (!user) {
+      return;
+    }
 
-      this.infoFields.map((fieldBlock, index) => {
-        const fieldName = fieldsParams[index].name;
-        const fieldValue = user[fieldName];
-        fieldBlock.setProp('value', fieldValue);
-      });
-      this.avatarUploader.setProp('src', user.avatar);
+    this.infoFields.map((fieldBlock, index) => {
+      const fieldName = fieldsParams[index].name;
+      const fieldValue = user[fieldName];
+      fieldBlock.setProp('value', fieldValue);
     });
+  };
+
+  componentDidMount() {
+    store.subscribeWithImmediateCall(this.connectInfoFieldsToStore);
+  }
+
+  componentWillUnmount() {
+    store.unsubscribe(this.connectInfoFieldsToStore);
   }
 
   render(): string {

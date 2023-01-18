@@ -42,6 +42,10 @@ export class Store<State extends IndexedObject> {
     callback(this.state);
   };
 
+  unsubscribe = (callback: (state: State) => void) => {
+    this.eventBus.off(StoreEvents.Updated, callback);
+  };
+
   getState = () => {
     return this.state;
   };

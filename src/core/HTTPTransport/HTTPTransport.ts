@@ -1,20 +1,7 @@
 import { isObject } from '$utils/objects';
 import { urlJoin } from '$utils/url';
 import { queryStringify } from './utils';
-import { HTTPMethod } from './types';
-
-type RequestOptions = {
-  data?: Record<string, string> | FormData;
-  timeout?: number;
-  method?: HTTPMethod;
-  headers?: Record<string, string>;
-};
-
-type Response<Data> = {
-  code: number;
-  data: Data;
-  dataText: string;
-};
+import { HTTPMethod, type Response, type RequestOptions } from './types';
 
 function parseResponse(responseString: string) {
   try {
@@ -114,7 +101,7 @@ export class HTTPTransport {
         xhr.send();
       } else {
         if (data instanceof FormData) {
-          xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+          xhr.send(data);
         } else if (isObject(data)) {
           xhr.setRequestHeader(
             'Content-Type',

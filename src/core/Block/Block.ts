@@ -10,6 +10,8 @@ export type BaseProps = UnknownObject & {
     click?: (event: MouseEvent) => void;
     submit?: (event: SubmitEvent) => void;
     focusout?: (event: FocusEvent) => void;
+    input?: (event: InputEvent) => void;
+    change?: (event: InputEvent) => void;
   };
   children?: Record<string, Block>;
   ref?: BlockRef;
@@ -146,8 +148,8 @@ export class Block<
   }
 
   private innerComponentDidUpdate(oldProps: Props, newProps: Props) {
-    this.componentDidUpdate(oldProps, newProps);
     this.eventBus().emit(Block.LIFECYCLE_EVENTS.RENDER);
+    this.componentDidUpdate(oldProps, newProps);
   }
 
   componentDidUpdate(_oldProps: Props, _newProps: Props) {
@@ -235,7 +237,7 @@ export class Block<
     if (block.childElementCount === 1) {
       const elementToInsert = block.children[0] as unknown as HTMLElement;
 
-      if (this.wrapperElement) {
+      if (this.wrapperElement.parentElement) {
         this.wrapperElement.replaceWith(elementToInsert);
       }
 
@@ -282,8 +284,6 @@ export class Block<
 
     return new Proxy(data, { get, set });
   };
-
-  // private makeChildrenProxy
 
   private createDocumentElement(tagName: string, className?: string) {
     const element = document.createElement(tagName);
@@ -371,31 +371,14 @@ export class Block<
       const stub = fragment.content.querySelector(
         `[data-id="${child.id}"]`
       );
-      const childContent = child.getContent();
 
-      if (childContent && stub) {
-        stub.replaceWith(childContent);
+      if (child.element && stub) {
+        stub.replaceWith(child.element);
       }
     });
 
     return fragment.content;
   };
-
-  show = () => {
-    const blockContent = this.getContent();
-
-    if (blockContent) {
-      blockContent.style.display = 'block';
-    }
-  };
-
-  hide() {
-    const blockContent = this.getContent();
-
-    if (blockContent) {
-      blockContent.style.display = 'none';
-    }
-  }
 }
 
 export function createRef(): BlockRef {
