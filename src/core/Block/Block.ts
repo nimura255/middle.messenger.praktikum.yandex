@@ -237,10 +237,7 @@ export class Block<
     if (block.childElementCount === 1) {
       const elementToInsert = block.children[0] as unknown as HTMLElement;
 
-      if (this.wrapperElement.parentElement) {
-        this.wrapperElement.replaceWith(elementToInsert);
-      }
-
+      this.wrapperElement.replaceWith(elementToInsert);
       this.wrapperElement = elementToInsert;
     } else {
       this.wrapperElement.appendChild(block);

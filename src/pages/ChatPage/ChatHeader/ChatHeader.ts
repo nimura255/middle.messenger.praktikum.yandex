@@ -1,7 +1,9 @@
-import { Block } from '$core/Block';
 import { Avatar } from '$components/Avatar';
 import { IconButton } from '$components/IconButton';
+import { Tooltip } from '$components/Tooltip';
+import { Block } from '$core/Block';
 import { verticalDotsIcon } from '$iconsTemplates';
+import { DotsTooltipContent } from './DotsTooltipContent';
 
 export class ChatHeader extends Block {
   constructor() {
@@ -9,12 +11,17 @@ export class ChatHeader extends Block {
     const dotsButton = new IconButton({
       iconTemplate: verticalDotsIcon,
     });
+    const tooltip = new Tooltip({
+      trigger: dotsButton,
+      content: new DotsTooltipContent(),
+    });
+
     const chatName = 'Lorem ipsum dolor sit amet, consectetur';
 
     const propsWithChildren = {
       children: {
         avatar,
-        dotsButton,
+        dotsButton: tooltip,
       },
     };
 
