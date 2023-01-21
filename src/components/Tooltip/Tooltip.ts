@@ -22,8 +22,12 @@ export class Tooltip extends Block {
     this.content = content;
     this.trigger = trigger;
     this.setProp('events', {
-      click: () => {
-        this.toggleState();
+      click: (event) => {
+        const target = event.target as HTMLElement;
+
+        if (trigger.element?.contains(target)) {
+          this.toggleState();
+        }
       },
     });
   }
