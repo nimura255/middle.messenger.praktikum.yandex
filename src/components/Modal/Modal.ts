@@ -15,6 +15,7 @@ export class Modal extends Block {
     if (isActive) {
       const slot = new ModalInner({
         slot: props.slot,
+        slotProps: props.slotProps,
         onOutsideClick: this.handleModalClose,
       });
       const portal = new Portal({ slot }) as unknown as Block;

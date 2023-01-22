@@ -9,7 +9,7 @@ export class IconButton extends Block {
 
   render(): string {
     return `
-      <button class="mfm-icon-button">
+      <button class="mfm-icon-button {{#if full}}mfm-icon-button_full{{/if}}">
         ${this.props.iconTemplate}
       </button>
     `;

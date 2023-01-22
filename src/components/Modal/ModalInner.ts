@@ -3,7 +3,7 @@ import type { ModalInnerProps } from './types';
 
 export class ModalInner extends Block {
   constructor(props: ModalInnerProps) {
-    const slotBlock = new props.slot({}, {});
+    const slotBlock = new props.slot(props.slotProps || {}, {});
 
     const handleClick = (event: MouseEvent) => {
       const modalOverlay = this.element;
