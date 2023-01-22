@@ -15,10 +15,17 @@
 
   &__search-wrapper {
     position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 0 12px 12px;
 
     &::after {
       @mixin bottom-separator-line;
+    }
+
+    & > *:first-child {
+      flex-grow: 1;
     }
   }
 

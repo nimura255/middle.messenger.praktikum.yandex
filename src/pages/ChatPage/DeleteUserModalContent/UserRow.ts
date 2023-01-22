@@ -10,6 +10,7 @@ export class UserRow extends Block {
     const deleteButton = new IconButton({
       iconTemplate: circledCrossIcon,
       full: true,
+      shape: 'circle',
     });
 
     super(

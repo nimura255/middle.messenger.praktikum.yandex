@@ -10,6 +10,7 @@ export class ChatHeader extends Block {
     const avatar = new Avatar({ src: '' });
     const dotsButton = new IconButton({
       iconTemplate: verticalDotsIcon,
+      shape: 'circle',
     });
     const tooltip = new Tooltip({
       trigger: dotsButton,

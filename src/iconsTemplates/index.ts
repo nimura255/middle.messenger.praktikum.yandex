@@ -9,6 +9,7 @@ export { garbageIcon } from './garbage';
 export { leaveIcon } from './leave';
 export { loadingSpinner } from './loadingSpinner';
 export { locationIcon } from './location';
+export { newMessageIcon } from './newMessage';
 export { pictureIcon } from './picture';
 export { searchIcon } from './search';
 export { verticalDotsIcon } from './verticalDots';
