@@ -23,3 +23,7 @@ export type SearchCurrentChatUsersParams = {
 export type DeleteUserFromChatParams = {
   userId: number;
 };
+
+export type SelectChatParams = {
+  chatId: number;
+};

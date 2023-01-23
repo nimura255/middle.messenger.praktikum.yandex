@@ -12,7 +12,6 @@ export class UserRow extends Block {
       appController.setLoadingSpinnerStatus(true);
       await chatsController.deleteUserFromChat({ userId: props.id });
       appController.setLoadingSpinnerStatus(false);
-      props.onDelete();
     };
 
     const avatar = new Avatar({ src: props.avatar || '' });

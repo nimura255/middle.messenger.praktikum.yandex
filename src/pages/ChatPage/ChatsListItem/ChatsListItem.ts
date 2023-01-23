@@ -1,7 +1,9 @@
 import { Block } from '$core/Block';
 import { Avatar } from '$components/Avatar';
 import { Counter } from '$components/Counter';
+import { chatsController } from '$controllers/chats';
 import { store, type StoreState } from '$store';
+import { formatMessageDateString } from '$utils/date';
 import type { ChatsListItemProps } from './types';
 import './styles.pcss';
 
@@ -12,13 +14,16 @@ export class ChatsListItem extends Block {
 
     const propsWithChildren = {
       ...props,
+      lastMessageTime: props.lastMessageTime
+        ? formatMessageDateString(props.lastMessageTime)
+        : undefined,
       isActive: false,
       children: {
         avatar,
         counter,
       },
       events: {
-        click: () => store.setByKey('currentChatId', props.id),
+        click: () => chatsController.selectChat({ chatId: props.id }),
       },
     };
 

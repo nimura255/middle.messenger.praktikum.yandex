@@ -1,16 +1,25 @@
-import { chatsController } from '$controllers/chats';
 import { Block, makeChildrenFromList } from '$core/Block';
+import { chatStore, type ChatStoreState } from '$store';
 import { UserRow } from './UserRow';
-import type { UserRowProps } from './types';
 import './styles.pcss';
 
 export class DeleteUserModalContent extends Block {
+  users: ChatStoreState['users'] | undefined;
+
   constructor() {
     super({}, {});
   }
 
-  renderUsersList = (items: UserRowProps[]) => {
-    const blocks = items.map((params) => new UserRow(params));
+  renderUsersList = (items: ChatStoreState['users']) => {
+    const blocks = items.map((params) => {
+      const { id, avatar, display_name, first_name, second_name } = params;
+
+      return new UserRow({
+        id: id,
+        avatar: avatar,
+        name: display_name || `${first_name} ${second_name}`,
+      });
+    });
     const { template, children } = makeChildrenFromList(blocks);
 
     this.setProps({
@@ -19,28 +28,23 @@ export class DeleteUserModalContent extends Block {
     });
   };
 
-  async componentDidMount() {
-    const searchResults = await chatsController.searchCurrentChatUsers();
+  connectToChatStore = (storeState: ChatStoreState) => {
+    const { users } = storeState;
 
-    if (!searchResults?.length) {
+    if (users === this.users) {
       return;
     }
 
-    const listItems = searchResults?.map((result, index) => {
-      const { id, first_name, display_name, second_name, avatar } = result;
+    this.users = users;
+    this.renderUsersList(users);
+  };
 
-      return {
-        id,
-        avatar,
-        name: display_name || `${first_name} ${second_name}`,
-        onDelete: () => {
-          listItems.splice(index, 1);
-          this.renderUsersList(listItems);
-        },
-      };
-    });
+  componentDidMount() {
+    chatStore.subscribeWithImmediateCall(this.connectToChatStore);
+  }
 
-    this.renderUsersList(listItems);
+  componentWillUnmount() {
+    chatStore.unsubscribe(this.connectToChatStore);
   }
 
   render() {

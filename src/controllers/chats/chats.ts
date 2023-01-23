@@ -1,40 +1,15 @@
-import { chatsAPI, type ChatInfo as ChatInfoFromAPI } from '$api/chats';
+import { chatsAPI } from '$api/chats';
 import { userAPI } from '$api/user';
-import { store, type ChatInfo } from '$store';
+import { chatStore, store } from '$store';
+import { adaptChatsListItems, deleteChatFromStore } from './utils';
 import type {
   AddUserToCharParams,
   CreateChatParams,
   DeleteUserFromChatParams,
   GetChatsParams,
   SearchCurrentChatUsersParams,
+  SelectChatParams,
 } from './types';
-
-function adaptChatsListItems(rawList: ChatInfoFromAPI[]): ChatInfo[] {
-  const { user } = store.getState();
-
-  return rawList.map((rawParams) => ({
-    id: rawParams.id,
-    chatName: rawParams.title,
-    lastMessage: rawParams.last_message?.content,
-    lastMessageTime: rawParams.last_message?.time,
-    newMessagesCount: rawParams.unread_count,
-    isLastMessageOwn: rawParams.last_message?.user.login === user?.login,
-    image: rawParams.avatar,
-    creatorId: rawParams.created_by,
-  }));
-}
-
-function deleteChatFromStore(chatId: number) {
-  const { chats } = store.getState();
-
-  if (!chats?.length) {
-    return;
-  }
-
-  const newChats = chats.filter(({ id }) => id !== chatId);
-
-  store.setByKey('chats', newChats);
-}
 
 export const chatsController = {
   async createChat(params: CreateChatParams): Promise<void> {
@@ -82,6 +57,7 @@ export const chatsController = {
   },
   async deleteUserFromChat(params: DeleteUserFromChatParams) {
     const { currentChatId } = store.getState();
+    const { users } = chatStore.getState();
     const { userId } = params;
 
     if (!currentChatId) {
@@ -92,6 +68,10 @@ export const chatsController = {
       chatId: currentChatId,
       users: [userId],
     });
+
+    const newUsersList = users.filter(({ id }) => id !== userId);
+
+    chatStore.setByKey('users', newUsersList);
   },
   async leaveCurrentChat() {
     const { user, currentChatId } = store.getState();
@@ -117,5 +97,29 @@ export const chatsController = {
     const { id } = response.result;
     deleteChatFromStore(id);
     store.setByKey('currentChatId', undefined);
+  },
+  async selectChat(params: SelectChatParams) {
+    const storeState = store.getState();
+    const { currentChatId, user } = storeState;
+
+    if (currentChatId === params.chatId) {
+      return;
+    }
+
+    const chatUsers = await chatsAPI.searchChatUsers({
+      chatId: params.chatId,
+    });
+    const { token } = await chatsAPI.connectToChat(params);
+
+    const filteredChatUsers = chatUsers.filter(
+      ({ id }) => id !== user?.id
+    );
+
+    store.set({
+      ...storeState,
+      currentChatToken: token,
+      currentChatId: params.chatId,
+    });
+    chatStore.setByKey('users', filteredChatUsers);
   },
 };

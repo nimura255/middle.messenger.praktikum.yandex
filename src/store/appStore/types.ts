@@ -12,6 +12,7 @@ export type StoreState = {
   showLoadingSpinner: boolean;
   chats: ChatInfo[];
   currentChatId?: number;
+  currentChatToken?: string;
 };
 
 export type ChatInfo = {

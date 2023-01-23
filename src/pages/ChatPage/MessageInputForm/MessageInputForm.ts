@@ -5,9 +5,10 @@ import { extractDataFromSubmitEvent } from '$utils/form';
 import { validateRequired, ValidationManager } from '$utils/validation';
 import { MessageFormActionButton } from '../MessageFormActionButton';
 import { MessageInput } from '../MessageInput';
+import type { MessageInputFormProps } from './types';
 
 export class MessageInputForm extends Block {
-  constructor() {
+  constructor(props: MessageInputFormProps) {
     const attachmentButton = new MessageFormActionButton({
       iconTemplate: clipIcon,
     });
@@ -28,19 +29,35 @@ export class MessageInputForm extends Block {
       ],
     });
 
-    const handleSubmit = (event: SubmitEvent) => {
-      event.preventDefault();
+    const clearInput = () => {
+      const element = messageInputRef.current?.element as
+        | HTMLInputElement
+        | undefined;
 
-      const formValues = extractDataFromSubmitEvent(event);
-      formValidationManager.validateForm(formValues);
-
-      if (!formValidationManager.hasErrors) {
-        // eslint-disable-next-line no-console
-        console.log(formValues);
+      if (element) {
+        element.value = '';
       }
     };
 
-    const props = {
+    const handleSubmit = (event: SubmitEvent) => {
+      event.preventDefault();
+
+      const onSubmit = this.props
+        .onSubmit as MessageInputFormProps['onSubmit'];
+      const formValues = extractDataFromSubmitEvent(event);
+      formValidationManager.validateForm(formValues);
+
+      if (!onSubmit || formValidationManager.hasErrors) {
+        return;
+      }
+
+      const { message } = formValues;
+      onSubmit({ text: message });
+      clearInput();
+    };
+
+    const propsWithChildren = {
+      ...props,
       children: {
         attachmentButton,
         messageInput,
@@ -49,7 +66,7 @@ export class MessageInputForm extends Block {
       events: { submit: handleSubmit },
     };
 
-    super(props, {});
+    super(propsWithChildren, {});
   }
 
   render(): string {

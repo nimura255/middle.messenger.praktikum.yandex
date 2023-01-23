@@ -77,3 +77,11 @@ export type DeleteChatResponse = {
   };
   userId: number;
 };
+
+export type ConnectToChatParams = {
+  chatId: number;
+};
+
+export type ConnectToChatResponse = {
+  token: string;
+};

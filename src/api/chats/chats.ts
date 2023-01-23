@@ -7,6 +7,8 @@ import type {
   AddUsersToChatParams,
   ChatInfo,
   ChatUserInfo,
+  ConnectToChatParams,
+  ConnectToChatResponse,
   CreateChatParams,
   CreateChatResponse,
   DeleteChatParams,
@@ -66,6 +68,13 @@ export const chatsAPI = {
       {
         data: params,
       }
+    );
+
+    return response.data;
+  },
+  async connectToChat(params: ConnectToChatParams) {
+    const response = await this.httpTransport.post<ConnectToChatResponse>(
+      `token/${params.chatId}`
     );
 
     return response.data;
