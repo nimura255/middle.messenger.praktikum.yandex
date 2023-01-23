@@ -102,6 +102,7 @@
     "baseUrl": "src",
     "paths": {
       "$api/*": ["api/*"],
+      "$app": ["app"],
       "$components": ["components"],
       "$components/*": ["components/*"],
       "$constants/*": ["constants/*"],

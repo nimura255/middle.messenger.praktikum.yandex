@@ -14,18 +14,14 @@ export class Router extends Block {
   currentPath: string | undefined;
 
   constructor(props: RouterProps) {
-    const { routes } = props;
-    const initPath = window.location.pathname || '/';
+    const { routes, onRouteChange } = props;
 
-    super({ children: {}, routes }, {});
+    super({ routes, onRouteChange, children: {} }, {});
 
-    this.prepareRouter();
-    this.routes = routes.map(({ path, block, constraint }) => ({
+    this.routes = routes.map(({ path, block }) => ({
       pathRegExp: makeRegExpFromPath(path),
-      constraint,
       block,
     }));
-    this.handleRouteChange(initPath);
   }
 
   private prepareRouter = () => {
@@ -37,7 +33,7 @@ export class Router extends Block {
   private handleRouteChange(newPath: string) {
     const route = this.findRoute(newPath);
 
-    if (!route || (route.constraint && !route.constraint())) {
+    if (!route) {
       navigate(this.currentPath || '/');
       return;
     }
@@ -46,6 +42,14 @@ export class Router extends Block {
     const block = new pageConstructor({}, {});
     this.setProp('children', { page: block });
     this.currentPath = newPath;
+
+    const onRouteChange = this.props.onRouteChange as
+      | (() => void)
+      | undefined;
+
+    if (onRouteChange) {
+      onRouteChange();
+    }
   }
 
   private findRoute(path: string) {
@@ -54,7 +58,14 @@ export class Router extends Block {
     });
   }
 
+  componentDidMount() {
+    const initPath = window.location.pathname || '/';
+
+    this.prepareRouter();
+    this.handleRouteChange(initPath);
+  }
+
   render(): string {
-    return '{{{page}}}';
+    return '<div>{{{page}}}</div>';
   }
 }

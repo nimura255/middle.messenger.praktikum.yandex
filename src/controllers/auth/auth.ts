@@ -1,31 +1,7 @@
 import { authAPI } from '$api/auth';
-import { isResponseError } from '$core/HTTPTransport';
 import { store } from '$store';
+import { handleAccessError, handleAuthError } from './utils';
 import type { SignInParams, SignUpParams } from './types';
-
-function handleAccessError(error: unknown) {
-  if (!isResponseError(error)) {
-    return;
-  }
-
-  const { code } = error;
-
-  if (code === 403) {
-    store.reset();
-  }
-}
-
-function handleAuthError(error: unknown) {
-  if (isResponseError(error)) {
-    const { code, data } = error;
-
-    if (code === 401) {
-      return (data as Record<string, string>).reason;
-    }
-  }
-
-  return '';
-}
 
 export const authController = {
   async signIn(params: SignInParams) {
@@ -78,7 +54,6 @@ export const authController = {
       });
     } catch (error) {
       handleAccessError(error);
-      throw error;
     }
   },
   async logOut() {

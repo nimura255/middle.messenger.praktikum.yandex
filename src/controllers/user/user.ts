@@ -1,4 +1,4 @@
-import { userApi } from '$api/user';
+import { userAPI } from '$api/user';
 import { routes } from '$constants/routes';
 import { appController } from '$controllers/app';
 import { isResponseError } from '$core/HTTPTransport';
@@ -29,7 +29,7 @@ export const userController = {
     appController.setLoadingSpinnerStatus(true);
 
     try {
-      await userApi.changePassword(params);
+      await userAPI.changePassword(params);
       navigate(routes.settings);
     } catch (error) {
       handleAccessError(error);
@@ -46,7 +46,7 @@ export const userController = {
     appController.setLoadingSpinnerStatus(true);
 
     try {
-      const newUserInfo = await userApi.changeUserProfile({
+      const newUserInfo = await userAPI.changeUserProfile({
         first_name: params.firstName,
         second_name: params.secondName,
         display_name: params.displayName,
@@ -82,7 +82,7 @@ export const userController = {
       const formData = new FormData();
       formData.append('avatar', avatarFile);
 
-      const response = await userApi.changeAvatar(formData);
+      const response = await userAPI.changeAvatar(formData);
 
       store.setByKey('user', {
         id: response.id,

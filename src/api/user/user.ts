@@ -6,7 +6,7 @@ import type {
 } from './types';
 import type { UserInfo } from '../types';
 
-export const userApi = {
+export const userAPI = {
   httpTransport: new HTTPTransport('api/v2/user'),
 
   async changeAvatar(formData: FormData): Promise<UserInfo> {

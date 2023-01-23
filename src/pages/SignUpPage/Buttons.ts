@@ -23,8 +23,10 @@ export class Buttons extends Block {
 
   render(): string {
     return `
-      {{{signUpButton}}}
-      {{{signInLink}}}
+      <div>
+        {{{signUpButton}}}
+        {{{signInLink}}}
+      </div>
     `;
   }
 }

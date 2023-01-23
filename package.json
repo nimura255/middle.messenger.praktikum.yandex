@@ -48,6 +48,7 @@
   },
   "alias": {
     "$api": "./src/api",
+    "$app": "./src/app",
     "$components": "./src/components",
     "$constants": "./src/constants",
     "$controllers": "./src/controllers",

@@ -10,4 +10,17 @@ export type StoreState = {
     avatar: string;
   };
   showLoadingSpinner: boolean;
+  chats: ChatInfo[];
+  currentChatId?: number;
+};
+
+export type ChatInfo = {
+  id: number;
+  chatName: string;
+  lastMessage?: string;
+  lastMessageTime?: string;
+  newMessagesCount?: number;
+  isLastMessageOwn?: boolean;
+  image?: string;
+  creatorId: number;
 };

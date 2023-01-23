@@ -32,12 +32,16 @@ export class Tooltip extends Block {
     });
   }
 
+  private getContentContainer = () => {
+    return this.element?.querySelector(
+      '.mfm-tooltip__content-container'
+    ) as HTMLElement | null;
+  };
+
   private show = () => {
     this.setProp('isShown', true);
 
-    const contentContainer = this.element?.querySelector(
-      '.mfm-tooltip__content-container'
-    ) as HTMLElement;
+    const contentContainer = this.getContentContainer();
 
     if (
       !this.content.element ||
@@ -72,16 +76,39 @@ export class Tooltip extends Block {
     }
   };
 
+  handleOutsideClick = (event: MouseEvent) => {
+    if (!this.props.isShown) {
+      return;
+    }
+
+    const clickTarget = event.target as HTMLElement;
+
+    if (
+      clickTarget !== this.element &&
+      !this.element?.contains(clickTarget)
+    ) {
+      this.hide();
+    }
+  };
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleOutsideClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
   render() {
     return `
       <div>
         {{{trigger}}}
+        {{#if isShown}}
+          <div class="mfm-tooltip__content-container">
+            {{{content}}}
+          </div>
+        {{/if}}
       </div>
-      {{#if isShown}}
-        <div class="mfm-tooltip__content-container">
-          {{{content}}}
-        </div>
-      {{/if}}
     `;
   }
 }

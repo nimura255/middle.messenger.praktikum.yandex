@@ -20,7 +20,13 @@ export function merge(
   firstObject: IndexedObject,
   secondObject: IndexedObject
 ) {
-  const result = { ...firstObject };
+  if (Array.isArray(firstObject) && Array.isArray(secondObject)) {
+    return secondObject;
+  }
+
+  const result = (
+    Array.isArray(firstObject) ? [...firstObject] : { ...firstObject }
+  ) as IndexedObject;
 
   for (const key in secondObject) {
     if (!(isObject(secondObject[key]) && Object.hasOwn(result, key))) {

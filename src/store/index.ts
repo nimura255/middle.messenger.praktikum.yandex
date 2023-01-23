@@ -1,2 +1,3 @@
+export { selectCurrentChat } from './selectors';
 export { store } from './store';
-export type { StoreState } from './types';
+export type { StoreState, ChatInfo } from './types';

@@ -18,7 +18,7 @@ export type Response<Data> = {
 };
 
 export type RequestOptions = {
-  data?: Record<string, string> | FormData;
+  data?: Record<string, unknown> | FormData;
   timeout?: number;
   method?: HTTPMethod;
   headers?: Record<string, string>;

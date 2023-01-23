@@ -8,18 +8,15 @@ export type LinkProps = BaseProps & {
 
 export type RouterProps = BaseProps & {
   routes: RouteParams[];
+  onRouteChange?: () => void;
 };
-
-type RouteConstraint = () => boolean;
 
 type RouteParams = {
   path: string;
   block: typeof Block<Record<string, unknown>>;
-  constraint?: RouteConstraint;
 };
 
 export type RouterRoutesListItem = {
   pathRegExp: RegExp;
   block: typeof Block<Record<string, unknown>>;
-  constraint?: RouteConstraint;
 };

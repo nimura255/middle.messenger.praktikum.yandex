@@ -20,6 +20,19 @@ export class ValidationManager {
 
   insertError = (fieldName: string, fieldError: string) => {
     this.errors[fieldName] = fieldError;
+    const fieldValidationParams = this.fieldsMap.get(fieldName);
+
+    if (!fieldValidationParams) {
+      return;
+    }
+
+    if (this.onFieldValidation) {
+      this.onFieldValidation({
+        name: fieldName,
+        ref: fieldValidationParams.ref,
+        error: fieldError,
+      });
+    }
   };
 
   validateField = (name: string, value: string) => {
@@ -31,14 +44,6 @@ export class ValidationManager {
 
     const errorText = fieldValidationParams?.rule(value) || '';
     this.insertError(name, errorText);
-
-    if (this.onFieldValidation) {
-      this.onFieldValidation({
-        name,
-        ref: fieldValidationParams.ref,
-        error: errorText,
-      });
-    }
   };
 
   validateForm = (valuesRecord: Record<string, string>) => {

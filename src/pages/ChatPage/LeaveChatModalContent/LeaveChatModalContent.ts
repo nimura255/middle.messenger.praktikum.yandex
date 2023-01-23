@@ -1,17 +1,27 @@
 import { Button } from '$components/Button';
+import { appController } from '$controllers/app';
+import { chatsController } from '$controllers/chats';
 import { Block } from '$core/Block';
 import type { LeaveChatModalContentProps } from './types';
 
 export class LeaveChatModalContent extends Block {
   constructor(props: LeaveChatModalContentProps) {
+    const handleSubmit = async () => {
+      appController.setLoadingSpinnerStatus(true);
+      await chatsController.leaveCurrentChat();
+      appController.setLoadingSpinnerStatus(false);
+      props.onClose();
+    };
+
     const cancelButton = new Button({
       text: 'Cancel',
       variant: 'secondary',
       events: { click: props.onClose },
     });
     const submitButton = new Button({
-      text: 'Yes',
+      text: 'Leave chat',
       variant: 'primary',
+      events: { click: handleSubmit },
     });
 
     super(

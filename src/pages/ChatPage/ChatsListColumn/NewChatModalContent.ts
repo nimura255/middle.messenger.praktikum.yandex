@@ -1,9 +1,13 @@
 import { Button } from '$components/Button';
 import { FormInput } from '$components/FormInput';
+import { appController } from '$controllers/app';
+import { chatsController } from '$controllers/chats';
 import { Block } from '$core/Block';
+import { extractDataFromSubmitEvent } from '$utils/form';
+import type { NewChatModalContentProps } from './types';
 
 export class NewChatModalContent extends Block {
-  constructor() {
+  constructor(props: NewChatModalContentProps) {
     const submitButton = new Button({
       text: 'Create',
       type: 'submit',
@@ -15,9 +19,26 @@ export class NewChatModalContent extends Block {
       type: 'text',
     });
 
+    const handleSubmit = async (event: SubmitEvent) => {
+      event.preventDefault();
+
+      const { title } = extractDataFromSubmitEvent(event);
+
+      appController.setLoadingSpinnerStatus(true);
+      await chatsController.createChat({
+        title: title || '',
+      });
+      appController.setLoadingSpinnerStatus(false);
+
+      props.onClose();
+    };
+
     super(
       {
         children: { chatNameInput, submitButton },
+        events: {
+          submit: handleSubmit,
+        },
       },
       {}
     );

@@ -1,4 +1,6 @@
 export type UserRowProps = {
-  avatarSrc?: string;
+  id: number;
+  avatar?: string;
   name: string;
+  onDelete: () => void;
 };

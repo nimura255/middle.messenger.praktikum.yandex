@@ -1,5 +1,7 @@
+import { chatsController } from '$controllers/chats';
 import { Block, makeChildrenFromList } from '$core/Block';
 import { UserRow } from './UserRow';
+import type { UserRowProps } from './types';
 import './styles.pcss';
 
 export class DeleteUserModalContent extends Block {
@@ -7,7 +9,7 @@ export class DeleteUserModalContent extends Block {
     super({}, {});
   }
 
-  renderUsersList = (items: Array<{ name: string }>) => {
+  renderUsersList = (items: UserRowProps[]) => {
     const blocks = items.map((params) => new UserRow(params));
     const { template, children } = makeChildrenFromList(blocks);
 
@@ -17,18 +19,26 @@ export class DeleteUserModalContent extends Block {
     });
   };
 
-  componentDidMount() {
-    const listItems = [
-      {
-        name: 'user1',
-      },
-      {
-        name: 'user2',
-      },
-      {
-        name: 'user3',
-      },
-    ];
+  async componentDidMount() {
+    const searchResults = await chatsController.searchCurrentChatUsers();
+
+    if (!searchResults?.length) {
+      return;
+    }
+
+    const listItems = searchResults?.map((result, index) => {
+      const { id, first_name, display_name, second_name, avatar } = result;
+
+      return {
+        id,
+        avatar,
+        name: display_name || `${first_name} ${second_name}`,
+        onDelete: () => {
+          listItems.splice(index, 1);
+          this.renderUsersList(listItems);
+        },
+      };
+    });
 
     this.renderUsersList(listItems);
   }
@@ -41,7 +51,7 @@ export class DeleteUserModalContent extends Block {
         </h1>
 
         <div class="mfm-delete-user-modal__rows-list">
-          ${this.props.listTemplate}
+          ${this.props.listTemplate || ''}
         </div>
       </div>
     `;

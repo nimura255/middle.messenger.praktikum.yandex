@@ -55,6 +55,7 @@ export class Block<
   protected props: Props;
   protected state = {} as State;
   protected children: Record<string, Block<Props, State>> | undefined;
+  private mountedChildren: Record<string, Block<Props, State>> = {};
   protected id = nanoid(6);
   private eventBus: () => EventBusOfBlock<Props>;
 
@@ -194,29 +195,35 @@ export class Block<
     this.props[key] = value;
   }
 
+  private dispatchUnmountForRemovedChildren() {
+    for (const childKey in this.mountedChildren) {
+      if (
+        !this.children ||
+        !this.children[childKey] ||
+        this.children[childKey] !== this.mountedChildren[childKey]
+      ) {
+        this.mountedChildren[childKey].dispatchComponentWillUnmount();
+        delete this.mountedChildren[childKey];
+      }
+    }
+  }
+
+  private dispatchMountForNewChildren() {
+    for (const childKey in this.children) {
+      if (
+        !this.mountedChildren ||
+        !this.mountedChildren[childKey] ||
+        this.children[childKey] !== this.mountedChildren[childKey]
+      ) {
+        this.children[childKey].dispatchComponentDidMount();
+        this.mountedChildren[childKey] = this.children[childKey];
+      }
+    }
+  }
+
   private setChildren(
     children: Record<string, Block<Props, State>> | undefined
   ) {
-    for (const key in this.children) {
-      if (
-        !children ||
-        !children[key] ||
-        children[key] !== this.children[key]
-      ) {
-        this.children[key].dispatchComponentWillUnmount();
-      }
-    }
-
-    for (const key in children) {
-      if (
-        !this.children ||
-        !this.children[key] ||
-        children[key] !== this.children[key]
-      ) {
-        children[key].dispatchComponentDidMount();
-      }
-    }
-
     this.children = children;
   }
 
@@ -225,24 +232,26 @@ export class Block<
   }
 
   private innerRender() {
+    this.dispatchUnmountForRemovedChildren();
+
     if (!this.wrapperElement) {
       return;
     }
 
     this.removeEvents();
-    this.wrapperElement.innerHTML = '';
 
     const block = this.compile(this.render());
 
-    if (block.childElementCount === 1) {
-      const elementToInsert = block.children[0] as unknown as HTMLElement;
-
-      this.wrapperElement.replaceWith(elementToInsert);
-      this.wrapperElement = elementToInsert;
-    } else {
-      this.wrapperElement.appendChild(block);
+    if (!block.childElementCount) {
+      return;
     }
 
+    const elementToInsert = block.children[0] as unknown as HTMLElement;
+
+    this.wrapperElement.replaceWith(elementToInsert);
+    this.wrapperElement = elementToInsert;
+
+    this.dispatchMountForNewChildren();
     this.addEvents();
   }
 

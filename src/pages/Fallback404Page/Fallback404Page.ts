@@ -8,10 +8,10 @@ export class Fallback404Page extends Block {
       message: 'Oops, page not found',
     });
 
-    super({ children: { fallbackLayout: fallbackLayout } }, {});
+    super({ children: { slot: fallbackLayout } }, {});
   }
 
   render() {
-    return '{{{ fallbackLayout }}}';
+    return '{{{slot}}}';
   }
 }

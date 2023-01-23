@@ -10,25 +10,21 @@ export class FallbackLayout extends Block {
       text: 'Return to main page',
     });
 
-    super(
-      { ...props, children: { link } },
-      {
-        tagName: 'main',
-        className: 'mfm-fallback-page-layout',
-      }
-    );
+    super({ ...props, children: { link } }, {});
   }
 
   render(): string {
     return `
-      <h1 class="mfm-typography__heading">
-        {{ code }}
-      </h1>
-      <p class="mfm-typography__text_xl">
-        {{ message }}
-      </p>
+      <main class="mfm-fallback-page-layout">
+        <h1 class="mfm-typography__heading">
+          {{ code }}
+        </h1>
+        <p class="mfm-typography__text_xl">
+          {{ message }}
+        </p>
 
-      {{{ link }}}
+        {{{ link }}}
+      </main>
     `;
   }
 }
