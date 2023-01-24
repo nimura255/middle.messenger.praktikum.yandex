@@ -19,6 +19,7 @@ export type ChatUser = {
 };
 
 export type ChatStoreState = {
+  hasLoadedAllOldMessages: boolean;
   messages: Message[];
   users: ChatUser[];
 };

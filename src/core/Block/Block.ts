@@ -12,6 +12,7 @@ export type BaseProps = UnknownObject & {
     focusout?: (event: FocusEvent) => void;
     input?: (event: InputEvent) => void;
     change?: (event: InputEvent) => void;
+    scroll?: (event: Event) => void;
   };
   children?: Record<string, Block>;
   ref?: BlockRef;

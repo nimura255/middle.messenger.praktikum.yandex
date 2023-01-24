@@ -1,6 +1,7 @@
 import { Block } from '$core/Block';
 import { Avatar } from '$components/Avatar';
 import { Counter } from '$components/Counter';
+import { appController } from '$controllers/app';
 import { chatsController } from '$controllers/chats';
 import { store, type StoreState } from '$store';
 import { formatMessageDateString } from '$utils/date';
@@ -23,7 +24,11 @@ export class ChatsListItem extends Block {
         counter,
       },
       events: {
-        click: () => chatsController.selectChat({ chatId: props.id }),
+        click: async () => {
+          appController.setLoadingSpinnerStatus(true);
+          await chatsController.selectChat({ chatId: props.id });
+          appController.setLoadingSpinnerStatus(false);
+        },
       },
     };
 

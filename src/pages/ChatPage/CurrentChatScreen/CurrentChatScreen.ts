@@ -11,11 +11,12 @@ import {
 export class CurrentChatScreen extends Block {
   chatSocket: ChatSocket | undefined;
   messageInputForm: MessageInputForm;
+  messagesList: MessagesList;
 
   constructor() {
     const chatHeader = new ChatHeader();
     const messageInputForm = new MessageInputForm({});
-    const messagesList = new MessagesList();
+    const messagesList = new MessagesList({});
 
     super(
       {
@@ -29,6 +30,7 @@ export class CurrentChatScreen extends Block {
     );
 
     this.messageInputForm = messageInputForm;
+    this.messagesList = messagesList;
   }
 
   componentDidMount() {
@@ -52,7 +54,10 @@ export class CurrentChatScreen extends Block {
         text: data.text,
       });
     };
+    const onLoadPrev = () => chatSocket.requestPrevMessages();
+
     this.messageInputForm.setProp('onSubmit', onMessageSubmit);
+    this.messagesList.setProp('onLoadPrev', onLoadPrev);
   }
 
   componentWillUnmount() {

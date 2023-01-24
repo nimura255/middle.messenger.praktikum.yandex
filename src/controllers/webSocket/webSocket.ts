@@ -1,19 +1,24 @@
 import { chatStore, type ChatStoreState } from '$store';
 import { urlJoin } from '$utils/url';
+import { messagesListPageSize, pingInterval } from './constants';
 import {
   type ConnectToCurrentChatParams,
   type MessageEventListener,
   type SendMessageParams,
   type SocketChatMessage,
+  type SocketChatOldMessage,
   type SocketMessage,
   SocketMessageType,
 } from './types';
+import { adaptMessageForStore } from '$controllers/webSocket/utils';
 
 export class ChatSocket {
   private socket: WebSocket | undefined;
   private messagesListenersSet = new Set<MessageEventListener>();
   private chatUsersMap = new Map<number, string>();
   private memoizedUsers: ChatStoreState['users'] | undefined;
+  // private hasLoadedAllOldMessages = false;
+  private pingIntervalId: number | undefined;
 
   connectToCurrentChat = (params: ConnectToCurrentChatParams) => {
     const { chatId, token, userId } = params;
@@ -24,11 +29,14 @@ export class ChatSocket {
 
     this.socket.addEventListener('open', () => {
       chatStore.subscribeWithImmediateCall(this.handleChatUserListChange);
+      this.requestPrevMessages();
+      this.pingIntervalId = window.setInterval(this.ping, pingInterval);
     });
     this.socket.addEventListener('close', () => {
       this.handleSocketClose();
       chatStore.unsubscribe(this.handleChatUserListChange);
       chatStore.reset();
+      window.clearInterval(this.pingIntervalId);
     });
 
     const listenToMessages = (event: MessageEvent<string>) => {
@@ -48,6 +56,22 @@ export class ChatSocket {
       JSON.stringify({
         type: SocketMessageType.Message,
         content: params.text,
+      })
+    );
+  };
+
+  requestPrevMessages = () => {
+    const { hasLoadedAllOldMessages, messages } = chatStore.getState();
+    const offset = messages.length;
+
+    if (hasLoadedAllOldMessages) {
+      return;
+    }
+
+    this.socket?.send(
+      JSON.stringify({
+        type: SocketMessageType.GetOld,
+        content: offset,
       })
     );
   };
@@ -91,24 +115,49 @@ export class ChatSocket {
     );
   };
 
-  private processSocketMessage = (message: SocketMessage) => {
+  private processSocketMessage = (
+    message: SocketMessage | SocketMessage[]
+  ) => {
+    if (Array.isArray(message)) {
+      const oldMessages = message as SocketChatOldMessage[];
+      const { messages: storedMessages, users } = chatStore.getState();
+
+      const adaptedOldMessages = oldMessages.map((rawData) => {
+        const authorName = this.chatUsersMap.get(rawData.user_id);
+
+        return adaptMessageForStore(rawData, authorName);
+      });
+      const hasLoadedAllOldMessages =
+        oldMessages.length < messagesListPageSize;
+
+      chatStore.set({
+        hasLoadedAllOldMessages,
+        users,
+        messages: [...storedMessages, ...adaptedOldMessages],
+      });
+
+      return;
+    }
+
     if (message.type === SocketMessageType.Message) {
-      const { id, time, user_id, content } = message as SocketChatMessage;
+      const { user_id } = message as SocketChatMessage;
       const { messages } = chatStore.getState();
       const authorName = this.chatUsersMap.get(user_id);
 
       chatStore.setByKey('messages', [
+        adaptMessageForStore(message as SocketChatMessage, authorName),
         ...messages,
-        {
-          id,
-          time,
-          text: content,
-          user_id,
-          authorName,
-        },
       ]);
 
       return;
     }
+  };
+
+  private ping = () => {
+    this.socket?.send(
+      JSON.stringify({
+        type: 'ping',
+      })
+    );
   };
 }
