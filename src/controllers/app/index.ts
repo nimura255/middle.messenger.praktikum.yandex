@@ -1,0 +1,1 @@
+export { appController } from './app';

@@ -5,5 +5,6 @@ export type MessageBubbleProps = BaseProps & {
   messageText?: string;
   time: string;
   own?: boolean;
+  authorName?: string;
   seen?: boolean;
 };

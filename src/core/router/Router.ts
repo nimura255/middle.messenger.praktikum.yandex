@@ -1,48 +1,69 @@
 import { Block } from '$core/Block';
-import type { RouterProps } from './types';
+import type { RouterProps, RouterRoutesListItem } from './types';
+import { navigate } from './navigate';
+
+function makeRegExpFromPath(path: string) {
+  const tokens = path.split('/');
+  const pathRegExpTemplate = tokens.join('/').replace('*', '.*');
+
+  return new RegExp(`^${pathRegExpTemplate}$`);
+}
 
 export class Router extends Block {
-  routesMap: Map<string, () => Block>;
+  routes: Array<RouterRoutesListItem>;
+  currentPath: string | undefined;
 
   constructor(props: RouterProps) {
-    const { routes } = props;
-    const initPath = window.location.pathname || '';
+    const { routes, onRouteChange } = props;
 
-    const routesMap = new Map(
-      routes.map((routeParams) => {
-        return [routeParams.path, routeParams.blockCreator];
-      })
-    );
+    super({ routes, onRouteChange, children: {} }, {});
 
-    const createInitBlock = routesMap.get(initPath);
-    let children = {};
-
-    if (createInitBlock) {
-      children = { page: createInitBlock() };
-    }
-
-    super({ children, routes }, {});
-
-    this.prepareRouter();
-    this.routesMap = routesMap;
+    this.routes = routes.map(({ path, block }) => ({
+      pathRegExp: makeRegExpFromPath(path),
+      block,
+    }));
   }
 
   private prepareRouter = () => {
     addEventListener('popstate', () => {
-      const newPath = window.location.pathname;
-
-      const createPage = this.routesMap.get(newPath);
-
-      if (createPage) {
-        const block = createPage();
-
-        this.setProps((props) => ({
-          ...props,
-          children: { page: block },
-        }));
-      }
+      this.handleRouteChange(window.location.pathname);
     });
   };
+
+  private handleRouteChange(newPath: string) {
+    const route = this.findRoute(newPath);
+
+    if (!route) {
+      navigate(this.currentPath || '/');
+      return;
+    }
+
+    const { block: pageConstructor } = route;
+    const block = new pageConstructor({}, {});
+    this.setProp('children', { page: block });
+    this.currentPath = newPath;
+
+    const onRouteChange = this.props.onRouteChange as
+      | (() => void)
+      | undefined;
+
+    if (onRouteChange) {
+      onRouteChange();
+    }
+  }
+
+  private findRoute(path: string) {
+    return this.routes.find((route) => {
+      return route.pathRegExp.test(path);
+    });
+  }
+
+  componentDidMount() {
+    const initPath = window.location.pathname || '/';
+
+    this.prepareRouter();
+    this.handleRouteChange(initPath);
+  }
 
   render(): string {
     return '<div>{{{page}}}</div>';

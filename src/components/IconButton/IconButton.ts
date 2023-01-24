@@ -7,10 +7,22 @@ export class IconButton extends Block {
     super(props, {});
   }
 
-  render(): string {
+  render() {
+    const { color, full, iconTemplate, shape, size } = this.props;
+
+    const className = [
+      'mfm-icon-button',
+      full ? 'mfm-icon-button_full' : '',
+      shape ? `mfm-icon-button_${shape}` : '',
+    ].join(' ');
+    const style = [
+      color ? `color: ${color}` : '',
+      size ? `width: ${size}; height: ${size}` : '',
+    ].join('; ');
+
     return `
-      <button class="mfm-icon-button">
-        ${this.props.iconTemplate}
+      <button class="${className}" style="${style}">
+        ${iconTemplate}
       </button>
     `;
   }

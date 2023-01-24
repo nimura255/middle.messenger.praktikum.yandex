@@ -1,0 +1,1 @@
+export { DeleteChatModalContent } from './DeleteChatModalContent';

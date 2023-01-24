@@ -4,8 +4,9 @@ import {
   validatePersonNameRequired,
   validatePhoneRequired,
 } from '$utils/validation';
+import type { FieldParams } from './types';
 
-export const fieldsParams = [
+export const fieldsParams: FieldParams[] = [
   {
     name: 'email',
     label: 'Email',
@@ -21,21 +22,21 @@ export const fieldsParams = [
     rule: validateUsernameRequired,
   },
   {
-    name: 'first_name',
+    name: 'firstName',
     label: 'First name',
     type: 'text',
     placeholder: 'First name',
     rule: validatePersonNameRequired,
   },
   {
-    name: 'second_name',
+    name: 'secondName',
     label: 'Second name',
     type: 'text',
     placeholder: 'Second name',
     rule: validatePersonNameRequired,
   },
   {
-    name: 'display_name',
+    name: 'displayName',
     label: 'Display name',
     type: 'text',
     placeholder: 'Display name',

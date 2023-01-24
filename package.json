@@ -21,13 +21,14 @@
   ],
   "scripts": {
     "dev": "parcel src/index.html --no-cache",
-    "build": "parcel build src/index.html --no-cache",
+    "build": "rm -rf dist && parcel build src/index.html --no-cache && cp public/* dist/",
     "start": "node index.js",
     "lint": "eslint --fix",
     "list-styles": "stylelint '**/*.pcss' --fix",
     "compile": "tsc --noEmit"
   },
   "devDependencies": {
+    "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
     "eslint": "8.29.0",
@@ -46,11 +47,16 @@
     "nanoid": "4.0.0"
   },
   "alias": {
+    "$api": "./src/api",
+    "$app": "./src/app",
     "$components": "./src/components",
+    "$constants": "./src/constants",
+    "$controllers": "./src/controllers",
     "$core": "./src/core",
     "$iconsTemplates": "./src/iconsTemplates",
     "$layouts": "./src/layouts",
     "$pages": "./src/pages",
+    "$store": "./src/store",
     "$utils": "./src/utils"
   }
 }

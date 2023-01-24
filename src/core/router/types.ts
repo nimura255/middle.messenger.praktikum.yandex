@@ -8,9 +8,15 @@ export type LinkProps = BaseProps & {
 
 export type RouterProps = BaseProps & {
   routes: RouteParams[];
+  onRouteChange?: () => void;
 };
 
 type RouteParams = {
   path: string;
-  blockCreator: () => Block;
+  block: typeof Block<Record<string, unknown>>;
+};
+
+export type RouterRoutesListItem = {
+  pathRegExp: RegExp;
+  block: typeof Block<Record<string, unknown>>;
 };

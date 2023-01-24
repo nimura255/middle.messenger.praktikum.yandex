@@ -1,2 +1,3 @@
 export { HTTPTransport } from './HTTPTransport';
-export { HTTPMethod } from './types';
+export { isResponse, isResponseError } from './utils';
+export { HTTPMethod, type ResponseError } from './types';

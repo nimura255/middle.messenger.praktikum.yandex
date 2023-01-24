@@ -19,6 +19,9 @@ export class Input extends Block {
         disabled
         {{/if}}
         type="{{type}}"
+        {{#if value}}
+        value="{{value}}"
+        {{/if}}
       >
     `;
   }

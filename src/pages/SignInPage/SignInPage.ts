@@ -2,6 +2,8 @@ import { Block, createRef } from '$core/Block';
 import { AuthLayout } from '$layouts/AuthLayout';
 import { setErrorTextByRef } from '$components/FormInput';
 import { FormInputs } from '$components/FormInputs';
+import { appController } from '$controllers/app';
+import { authController } from '$controllers/auth';
 import { Buttons } from './Buttons';
 import { extractDataFromSubmitEvent } from '$utils/form';
 import {
@@ -48,21 +50,24 @@ export class SignInPage extends Block {
     });
     const buttons = new Buttons();
 
-    const handleSubmit = (event: SubmitEvent) => {
+    const handleSubmit = async (event: SubmitEvent) => {
       event.preventDefault();
-      const submittedData = extractDataFromSubmitEvent(event) as Record<
-        string,
-        string
-      >;
+      const submittedData = extractDataFromSubmitEvent(event);
       validationManager.validateForm(submittedData);
 
       if (validationManager.hasErrors) {
-        // eslint-disable-next-line no-console
-        console.log('Validation error');
+        return;
       }
 
-      // eslint-disable-next-line no-console
-      console.log(submittedData);
+      const { login, password } = submittedData;
+
+      appController.setLoadingSpinnerStatus(true);
+      const errorText = await authController.signIn({ login, password });
+      appController.setLoadingSpinnerStatus(false);
+
+      if (errorText) {
+        validationManager.insertError('password', errorText);
+      }
     };
 
     const authLayout = new AuthLayout({
@@ -74,7 +79,7 @@ export class SignInPage extends Block {
     super({ children: { authLayout } }, {});
   }
 
-  render(): string {
+  render() {
     return `{{{authLayout}}}`;
   }
 }

@@ -1,0 +1,29 @@
+.mfm-tooltip-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.mfm-tooltip-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+
+  & svg {
+    width: 22px;
+    height: 22px;
+    color: var(--mfm-color-blue);
+  }
+
+  &__name {
+    color: var(--mfm-color-asphalt);
+  }
+
+  &:hover {
+    background: var(--mfm-color-blue-light);
+  }
+}

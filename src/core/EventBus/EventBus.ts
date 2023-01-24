@@ -7,7 +7,6 @@ export class EventBus<
   M extends { [K in E]: unknown[] } = Record<E, unknown[]>
 > {
   private listeners: { [key in E]?: Listener<M[E]>[] } = {};
-  private queuesRecord: Record<string, Array<() => void>> = {};
 
   on<EventKey extends E = E>(
     event: EventKey,
@@ -33,32 +32,14 @@ export class EventBus<
   }
 
   emit<EventKey extends E = E>(event: EventKey, ...args: M[EventKey]) {
-    const handler = () => {
-      const listeners = this.listeners[event];
+    const listeners = this.listeners[event];
 
-      if (!listeners) {
-        return;
-      }
-
-      listeners.forEach((listener) => {
-        listener(...args);
-      });
-
-      const nextHandler = this.queuesRecord[event].shift();
-
-      if (nextHandler) {
-        nextHandler();
-      }
-    };
-
-    if (!this.queuesRecord[event]) {
-      this.queuesRecord[event] = [];
+    if (!listeners) {
+      return;
     }
 
-    this.queuesRecord[event].push(handler);
-
-    if (this.queuesRecord[event].length === 1) {
-      handler();
-    }
+    listeners.forEach((listener) => {
+      listener(...args);
+    });
   }
 }

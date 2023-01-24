@@ -1,3 +1,4 @@
+@import './common.pcss';
 @import './fonts.pcss';
 @import './mixins.pcss';
 @import './typography.pcss';
@@ -6,9 +7,12 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   background: var(--mfm-color-asphalt);
   background: var(--mfm-color-white);
+
+  &:has(.mfm-chat-page__layout) {
+    overflow: hidden;
+  }
 }
 
 h1 {

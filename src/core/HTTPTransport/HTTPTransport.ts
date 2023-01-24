@@ -1,58 +1,70 @@
+import { apiRoot } from '$constants/apiRoots';
+import { isObject } from '$utils/objects';
+import { urlJoin } from '$utils/url';
 import { queryStringify } from './utils';
-import { HTTPMethod } from './types';
+import { HTTPMethod, type Response, type RequestOptions } from './types';
 
-type RequestOptions = {
-  data?: Record<string, string>;
-  timeout?: number;
-  method?: HTTPMethod;
-  headers?: Record<string, string>;
-};
+function parseResponse(responseString: string) {
+  try {
+    return JSON.parse(responseString);
+  } catch {
+    return responseString;
+  }
+}
 
 export class HTTPTransport {
-  get = (url: string, options: RequestOptions = {}) => {
-    const { data, timeout } = options;
-    let urlWithParams = url;
+  private readonly baseUrl: string;
 
-    if (data) {
-      urlWithParams = url + queryStringify(data);
+  constructor(routePrefix: string) {
+    this.baseUrl = urlJoin(apiRoot, routePrefix);
+  }
+
+  get = <Data>(route: string, options: RequestOptions = {}) => {
+    const { data, timeout } = options;
+    let routeWithParams = route;
+
+    if (data && isObject(data)) {
+      routeWithParams =
+        route + queryStringify(data as IndexedObject<string>);
     }
 
-    return this.request(
-      urlWithParams,
+    return this.request<Data>(
+      routeWithParams,
       { ...options, method: HTTPMethod.GET },
       timeout
     );
   };
 
-  post = (url: string, options: RequestOptions = {}) => {
-    return this.request(
-      url,
+  post = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
+      route,
       { ...options, method: HTTPMethod.POST },
       options.timeout
     );
   };
 
-  put = (url: string, options: RequestOptions = {}) => {
-    return this.request(
-      url,
+  put = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
+      route,
       { ...options, method: HTTPMethod.PUT },
       options.timeout
     );
   };
 
-  delete = (url: string, options: RequestOptions = {}) => {
-    return this.request(
-      url,
+  delete = <Data>(route: string, options: RequestOptions = {}) => {
+    return this.request<Data>(
+      route,
       { ...options, method: HTTPMethod.DELETE },
       options.timeout
     );
   };
 
-  request = (
-    url: string,
+  request = <Data>(
+    route: string,
     options: RequestOptions = {},
     timeout = 5000
-  ) => {
+  ): Promise<Response<Data>> => {
+    const url = urlJoin(this.baseUrl, route);
     const { method = HTTPMethod.GET, data, headers } = options;
 
     return new Promise((resolve, reject) => {
@@ -62,17 +74,23 @@ export class HTTPTransport {
 
       xhr.onload = function () {
         const stringStatus = `${xhr.status}`;
+        const responseData = {
+          code: xhr.status,
+          data: parseResponse(xhr.response || '{}'),
+          dataText: xhr.responseText || '',
+        };
 
         if (stringStatus.startsWith('4') || stringStatus.startsWith('5')) {
-          reject(xhr);
+          reject(responseData);
         } else {
-          resolve(xhr);
+          resolve(responseData);
         }
       };
 
       xhr.onabort = reject;
       xhr.onerror = reject;
       xhr.ontimeout = reject;
+      xhr.withCredentials = true;
 
       if (headers) {
         Object.entries(headers).forEach(([key, value]) => {
@@ -83,7 +101,21 @@ export class HTTPTransport {
       if (method === HTTPMethod.GET || !data) {
         xhr.send();
       } else {
-        xhr.send(data as unknown as XMLHttpRequestBodyInit);
+        if (data instanceof FormData) {
+          xhr.send(data);
+        } else if (isObject(data)) {
+          xhr.setRequestHeader(
+            'Content-Type',
+            'application/json; charset=utf-8'
+          );
+          xhr.send(JSON.stringify(data));
+        } else {
+          xhr.setRequestHeader(
+            'Content-Type',
+            'text/plain; charset=utf-8'
+          );
+          xhr.send(data as unknown as string);
+        }
       }
     });
   };

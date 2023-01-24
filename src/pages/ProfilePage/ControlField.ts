@@ -5,12 +5,12 @@ import type { ControlFieldProps } from './types';
 
 export class ControlField extends Block {
   constructor(props: ControlFieldProps) {
-    const link = new Button({
+    const button = new Button({
       variant: 'inline',
       text: props.text,
     });
     const infoField = new ProfileInfoField({
-      children: { slot: link },
+      children: { slot: button },
     });
 
     const propsWithChildren = {

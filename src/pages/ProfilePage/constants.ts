@@ -1,26 +1,26 @@
-export const mockFields = [
+export const fieldsParams = [
   {
-    name: 'Email',
-    value: 'pochta@yandex.ru',
+    label: 'Email',
+    name: 'email',
   },
   {
-    name: 'Username',
-    value: 'ivanivanov',
+    label: 'Username',
+    name: 'login',
   },
   {
-    name: 'First name',
-    value: 'Ivan',
+    label: 'First name',
+    name: 'firstName',
   },
   {
-    name: 'Second name',
-    value: 'Ivanov',
+    label: 'Second name',
+    name: 'secondName',
   },
   {
-    name: 'Display name',
-    value: 'ivanivanov',
+    label: 'Display name',
+    name: 'displayName',
   },
   {
-    name: 'Phone number',
-    value: '+7 (909) 967 30 30',
+    label: 'Phone number',
+    name: 'phone',
   },
-];
+] as const;

@@ -1,0 +1,14 @@
+.mfm-loading-spinner {
+  animation: 1s infinite loading-spinner-spin;
+  animation-timing-function: steps(11, jump-both);
+
+  @keyframes loading-spinner-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

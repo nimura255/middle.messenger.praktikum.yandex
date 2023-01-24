@@ -10,6 +10,9 @@ export type BaseProps = UnknownObject & {
     click?: (event: MouseEvent) => void;
     submit?: (event: SubmitEvent) => void;
     focusout?: (event: FocusEvent) => void;
+    input?: (event: InputEvent) => void;
+    change?: (event: InputEvent) => void;
+    scroll?: (event: Event) => void;
   };
   children?: Record<string, Block>;
   ref?: BlockRef;
@@ -27,6 +30,7 @@ type EventBusOfBlock<Props = BaseProps> = EventBus<
     [Block.LIFECYCLE_EVENTS.COMPONENT_DID_MOUNT]: [Props];
     [Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE]: [Props, Props];
     [Block.LIFECYCLE_EVENTS.RENDER]: [void];
+    [Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT]: [void];
   }
 >;
 
@@ -43,6 +47,7 @@ export class Block<
     INIT: 'lifecycle:init',
     COMPONENT_DID_MOUNT: 'lifecycle:component-did-mount',
     COMPONENT_DID_UPDATE: 'lifecycle:component-did-update',
+    COMPONENT_WILL_UNMOUNT: 'lifecycle:component-will-unmount',
     RENDER: 'lifecycle:render',
   } as const;
 
@@ -51,6 +56,7 @@ export class Block<
   protected props: Props;
   protected state = {} as State;
   protected children: Record<string, Block<Props, State>> | undefined;
+  private mountedChildren: Record<string, Block<Props, State>> = {};
   protected id = nanoid(6);
   private eventBus: () => EventBusOfBlock<Props>;
 
@@ -68,7 +74,7 @@ export class Block<
       tagName,
       className,
     };
-    this.children = children;
+    this.setChildren(children);
     this.props = this.makeDependencyDataProxy(propsWithoutChildren);
     this.state = this.makeDependencyDataProxy({} as State);
     this.eventBus = () => eventBus;
@@ -91,6 +97,10 @@ export class Block<
       this.innerComponentDidUpdate.bind(this)
     );
     eventBus.on(
+      Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT,
+      this.innerComponentWillUnmount.bind(this)
+    );
+    eventBus.on(
       Block.LIFECYCLE_EVENTS.RENDER,
       this.innerRender.bind(this)
     );
@@ -108,12 +118,6 @@ export class Block<
 
   private innerComponentDidMount(props: Props) {
     this.componentDidMount(props);
-
-    if (this.children) {
-      Object.values(this.children).forEach((child) => {
-        child.dispatchComponentDidMount();
-      });
-    }
   }
 
   componentDidMount(_props: Props) {
@@ -127,9 +131,27 @@ export class Block<
     );
   }
 
+  private innerComponentWillUnmount() {
+    this.componentWillUnmount();
+
+    if (this.children) {
+      Object.values(this.children).forEach((child) => {
+        child.dispatchComponentWillUnmount();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    //
+  }
+
+  dispatchComponentWillUnmount() {
+    this.eventBus().emit(Block.LIFECYCLE_EVENTS.COMPONENT_WILL_UNMOUNT);
+  }
+
   private innerComponentDidUpdate(oldProps: Props, newProps: Props) {
-    this.componentDidUpdate(oldProps, newProps);
     this.eventBus().emit(Block.LIFECYCLE_EVENTS.RENDER);
+    this.componentDidUpdate(oldProps, newProps);
   }
 
   componentDidUpdate(_oldProps: Props, _newProps: Props) {
@@ -160,14 +182,50 @@ export class Block<
       this.separateChildrenAndProps(nextProps);
 
     if (children) {
-      this.children = children;
+      this.setChildren(children);
     }
 
     Object.assign(this.props, propsWithoutChildren);
   }
 
   setProp<K extends keyof Props, V extends Props[K]>(key: K, value: V) {
+    if (key === 'children') {
+      this.setChildren(value as typeof this.children);
+    }
+
     this.props[key] = value;
+  }
+
+  private dispatchUnmountForRemovedChildren() {
+    for (const childKey in this.mountedChildren) {
+      if (
+        !this.children ||
+        !this.children[childKey] ||
+        this.children[childKey] !== this.mountedChildren[childKey]
+      ) {
+        this.mountedChildren[childKey].dispatchComponentWillUnmount();
+        delete this.mountedChildren[childKey];
+      }
+    }
+  }
+
+  private dispatchMountForNewChildren() {
+    for (const childKey in this.children) {
+      if (
+        !this.mountedChildren ||
+        !this.mountedChildren[childKey] ||
+        this.children[childKey] !== this.mountedChildren[childKey]
+      ) {
+        this.children[childKey].dispatchComponentDidMount();
+        this.mountedChildren[childKey] = this.children[childKey];
+      }
+    }
+  }
+
+  private setChildren(
+    children: Record<string, Block<Props, State>> | undefined
+  ) {
+    this.children = children;
   }
 
   get element() {
@@ -175,27 +233,26 @@ export class Block<
   }
 
   private innerRender() {
+    this.dispatchUnmountForRemovedChildren();
+
     if (!this.wrapperElement) {
       return;
     }
 
-    const block = this.compile(this.render());
-
     this.removeEvents();
 
-    if (block.childElementCount === 1) {
-      const elementToInsert = block.children[0] as unknown as HTMLElement;
+    const block = this.compile(this.render());
 
-      if (this.wrapperElement) {
-        this.wrapperElement.replaceWith(elementToInsert);
-      }
-
-      this.wrapperElement = elementToInsert;
-    } else {
-      this.wrapperElement.innerHTML = '';
-      this.wrapperElement.appendChild(block);
+    if (!block.childElementCount) {
+      return;
     }
 
+    const elementToInsert = block.children[0] as unknown as HTMLElement;
+
+    this.wrapperElement.replaceWith(elementToInsert);
+    this.wrapperElement = elementToInsert;
+
+    this.dispatchMountForNewChildren();
     this.addEvents();
   }
 
@@ -217,15 +274,17 @@ export class Block<
     };
 
     const set = (target: Data, propertyKey: string, value: unknown) => {
-      const prevProps = { ...this.props };
-      target[propertyKey] = value;
-      const newProps = { ...this.props };
+      if (target[propertyKey] !== value) {
+        const prevProps = { ...this.props };
+        target[propertyKey] = value;
+        const newProps = { ...this.props };
 
-      this.eventBus().emit(
-        Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE,
-        prevProps,
-        newProps
-      );
+        this.eventBus().emit(
+          Block.LIFECYCLE_EVENTS.COMPONENT_DID_UPDATE,
+          prevProps,
+          newProps
+        );
+      }
 
       return true;
     };
@@ -319,31 +378,14 @@ export class Block<
       const stub = fragment.content.querySelector(
         `[data-id="${child.id}"]`
       );
-      const childContent = child.getContent();
 
-      if (childContent && stub) {
-        stub.replaceWith(childContent);
+      if (child.element && stub) {
+        stub.replaceWith(child.element);
       }
     });
 
     return fragment.content;
   };
-
-  show = () => {
-    const blockContent = this.getContent();
-
-    if (blockContent) {
-      blockContent.style.display = 'block';
-    }
-  };
-
-  hide() {
-    const blockContent = this.getContent();
-
-    if (blockContent) {
-      blockContent.style.display = 'none';
-    }
-  }
 }
 
 export function createRef(): BlockRef {

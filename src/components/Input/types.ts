@@ -6,4 +6,5 @@ export type InputProps = BaseProps & {
   name?: string;
   placeholder?: string;
   type?: string;
+  value?: string;
 };

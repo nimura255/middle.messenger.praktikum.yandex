@@ -1,11 +1,19 @@
 import { Block } from '$core/Block';
 import { doubleCheckMarkIcon } from '$iconsTemplates';
+import { formatMessageDateString } from '$utils/date';
 import type { MessageBubbleProps } from './types';
 import './style.pcss';
 
 export class MessageBubble extends Block {
   constructor(props: MessageBubbleProps) {
-    super(props, {});
+    super(
+      {
+        ...props,
+        time: formatMessageDateString(props.time),
+        authorName: props.own ? '' : props.authorName,
+      },
+      {}
+    );
   }
 
   render(): string {
@@ -19,6 +27,12 @@ export class MessageBubble extends Block {
         {{/if}}
 
         <div class="mfm-message-bubble__inner">
+          {{#if authorName}}
+            <p class="mfm-message-bubble__inner__author-name mfm-typography__text_m">
+              {{authorName}}
+            </p>
+          {{/if}}
+
           {{#if messageText}}
             <p class="mfm-message-bubble__inner__message-text mfm-typography__text_m">
               {{messageText}}

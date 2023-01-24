@@ -1,3 +1,4 @@
+import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { Button } from '$components/Button';
 import { Link } from '$components/Link';
@@ -10,7 +11,7 @@ export class Buttons extends Block {
     });
     const signInLink = new Link({
       text: 'Sign in',
-      href: '/signIn',
+      href: routes.signIn,
     });
 
     const propsWithChildren = {
@@ -22,8 +23,10 @@ export class Buttons extends Block {
 
   render(): string {
     return `
-      {{{signUpButton}}}
-      {{{signInLink}}}
+      <div>
+        {{{signUpButton}}}
+        {{{signInLink}}}
+      </div>
     `;
   }
 }
