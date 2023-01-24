@@ -5,7 +5,8 @@
 [![Live version](https://img.shields.io/badge/Netlify-0e1e25?style=for-the-badge&logo=netlify&logoColor=00c7b7)](https://rad-cendol-814dda.netlify.app)
 [![Figma mockups](https://img.shields.io/badge/Figma-black?style=for-the-badge&logo=figma&logoColor=a259ff)](https://www.figma.com/file/3HNQs7W3ycbnq6RgKppFfE/messenger_praktikum?node-id=0%3A1&t=OApZEFNbugkSvnzX-1)
 
-App that will become messenger in the future.
+Messenger application.
+Right now only text messages are supported.
 Made with TypeScript, Post-CSS and Parcel.
 
 ## Scripts
