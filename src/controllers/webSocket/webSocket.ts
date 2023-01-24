@@ -35,7 +35,6 @@ export class ChatSocket {
     this.socket.addEventListener('close', () => {
       this.handleSocketClose();
       chatStore.unsubscribe(this.handleChatUserListChange);
-      chatStore.reset();
       window.clearInterval(this.pingIntervalId);
     });
 

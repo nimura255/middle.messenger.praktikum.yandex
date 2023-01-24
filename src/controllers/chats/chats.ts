@@ -120,6 +120,10 @@ export const chatsController = {
       currentChatToken: token,
       currentChatId: params.chatId,
     });
-    chatStore.setByKey('users', filteredChatUsers);
+    chatStore.set({
+      hasLoadedAllOldMessages: false,
+      users: filteredChatUsers,
+      messages: [],
+    });
   },
 };
