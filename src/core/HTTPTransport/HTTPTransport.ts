@@ -1,3 +1,4 @@
+import { apiRoot } from '$constants/apiRoots';
 import { isObject } from '$utils/objects';
 import { urlJoin } from '$utils/url';
 import { queryStringify } from './utils';
@@ -15,7 +16,7 @@ export class HTTPTransport {
   private readonly baseUrl: string;
 
   constructor(routePrefix: string) {
-    this.baseUrl = urlJoin(process.env.API_ROOT || '', routePrefix);
+    this.baseUrl = urlJoin(apiRoot, routePrefix);
   }
 
   get = <Data>(route: string, options: RequestOptions = {}) => {

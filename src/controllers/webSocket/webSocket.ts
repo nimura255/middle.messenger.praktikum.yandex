@@ -1,3 +1,4 @@
+import { wsRoot } from '$constants/apiRoots';
 import { chatStore, type ChatStoreState } from '$store';
 import { urlJoin } from '$utils/url';
 import { messagesListPageSize, pingInterval } from './constants';
@@ -17,14 +18,12 @@ export class ChatSocket {
   private messagesListenersSet = new Set<MessageEventListener>();
   private chatUsersMap = new Map<number, string>();
   private memoizedUsers: ChatStoreState['users'] | undefined;
-  // private hasLoadedAllOldMessages = false;
   private pingIntervalId: number | undefined;
 
   connectToCurrentChat = (params: ConnectToCurrentChatParams) => {
     const { chatId, token, userId } = params;
 
-    const rootUrl = process.env.WS_ROOT || '';
-    const url = urlJoin(rootUrl, `${userId}/${chatId}/${token}`);
+    const url = urlJoin(wsRoot, `${userId}/${chatId}/${token}`);
     this.socket = new WebSocket(url);
 
     this.socket.addEventListener('open', () => {
