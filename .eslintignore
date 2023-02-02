@@ -1,5 +1,4 @@
 node_modules
 dist
-index.js
-webpack.config/*
-babel.config.js
+*.js
+coverage

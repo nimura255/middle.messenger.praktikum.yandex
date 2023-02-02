@@ -43,3 +43,11 @@ export function isResponseError(
 ): value is Response<{ reason: string }> {
   return isResponse<{ reason: string }>(value) && !!value.data.reason;
 }
+
+export function parseResponse(responseString: string) {
+  try {
+    return JSON.parse(responseString);
+  } catch {
+    return responseString;
+  }
+}

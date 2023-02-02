@@ -24,10 +24,12 @@ export class Router extends Block {
     }));
   }
 
+  private popstateListener = () => {
+    this.handleRouteChange(window.location.pathname);
+  };
+
   private prepareRouter = () => {
-    addEventListener('popstate', () => {
-      this.handleRouteChange(window.location.pathname);
-    });
+    addEventListener('popstate', this.popstateListener);
   };
 
   private handleRouteChange(newPath: string) {
@@ -63,6 +65,10 @@ export class Router extends Block {
 
     this.prepareRouter();
     this.handleRouteChange(initPath);
+  }
+
+  componentWillUnmount() {
+    removeEventListener('popstate', this.popstateListener);
   }
 
   render(): string {

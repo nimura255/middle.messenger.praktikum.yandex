@@ -1,17 +1,23 @@
-function removeSecondsFromTimeString(timeString: string) {
-  return timeString.replace(/:\d+$/, '');
+function extractReadableTime(date: Date): string {
+  const timeString = date.toTimeString();
+  const match = timeString.match(/\d\d:\d\d/);
+
+  return match?.[0] || '';
 }
 
-function isMoreThanWeek(milliseconds: number) {
-  const millisecondsInWeek = 7 * 24 * 60 * 60 * 1000;
+function extractReadableFullDate(date: Date): string {
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
 
-  return milliseconds >= millisecondsInWeek;
-}
+  const formatDateToken = (token: number) => {
+    return token < 10 ? `0${token}` : `${token}`;
+  };
 
-function isMoreThanDay(milliseconds: number) {
-  const millisecondsInDay = 24 * 60 * 60 * 1000;
+  const formattedDay = formatDateToken(day);
+  const formattedMonth = formatDateToken(month + 1);
 
-  return milliseconds >= millisecondsInDay;
+  return `${formattedDay}.${formattedMonth}.${year}`;
 }
 
 function getWeekDayName(weekDayNumber: number) {
@@ -20,18 +26,34 @@ function getWeekDayName(weekDayNumber: number) {
   return weekDays[weekDayNumber];
 }
 
+function isCurrentDay(date: Date): boolean {
+  const currentDate = new Date();
+
+  return currentDate.toDateString() === date.toDateString();
+}
+
+function isCurrentWeek(date: Date): boolean {
+  const currentDate = new Date();
+  const currentDay = currentDate.getDate();
+  const currentWeekDay = currentDate.getDay();
+
+  const currentWeekStart = new Date();
+  currentWeekStart.setDate(currentDay - currentWeekDay);
+
+  return date >= currentWeekStart;
+}
+
 export function formatMessageDateString(dateString: string) {
   const date = new Date(dateString);
-  const currentDate = new Date();
-  const diff = currentDate.getTime() - date.getTime();
+  const readableTime = extractReadableTime(date);
 
-  if (isMoreThanWeek(diff)) {
-    return date.toLocaleDateString().replace('/', '.');
+  if (!isCurrentWeek(date)) {
+    return extractReadableFullDate(date);
   }
 
-  if (isMoreThanDay(diff)) {
-    return getWeekDayName(date.getDay());
+  if (!isCurrentDay(date)) {
+    return `${readableTime} ${getWeekDayName(date.getDay())}`;
   }
 
-  return removeSecondsFromTimeString(date.toLocaleTimeString());
+  return readableTime;
 }

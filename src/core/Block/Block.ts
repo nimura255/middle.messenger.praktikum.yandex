@@ -178,14 +178,13 @@ export class Block<
       return;
     }
 
-    const { children, propsWithoutChildren } =
-      this.separateChildrenAndProps(nextProps);
+    const { children } = this.separateChildrenAndProps(nextProps);
 
     if (children) {
       this.setChildren(children);
     }
 
-    Object.assign(this.props, propsWithoutChildren);
+    Object.assign(this.props, nextProps);
   }
 
   setProp<K extends keyof Props, V extends Props[K]>(key: K, value: V) {
@@ -386,8 +385,4 @@ export class Block<
 
     return fragment.content;
   };
-}
-
-export function createRef(): BlockRef {
-  return { current: null } as BlockRef;
 }
