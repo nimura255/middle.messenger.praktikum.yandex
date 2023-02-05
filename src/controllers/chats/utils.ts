@@ -11,7 +11,7 @@ export function adaptChatsListItems(
     chatName: rawParams.title,
     lastMessage: rawParams.last_message?.content,
     lastMessageTime: rawParams.last_message?.time,
-    newMessagesCount: 0,
+    newMessagesCount: rawParams.unread_count,
     isLastMessageOwn: rawParams.last_message?.user.login === user?.login,
     image: rawParams.avatar,
     creatorId: rawParams.created_by,

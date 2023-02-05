@@ -1,2 +1,2 @@
 export { chatsAPI } from './chats';
-export type { ChatInfo } from './types';
+export type { ChatInfo, ChatUserInfo } from './types';

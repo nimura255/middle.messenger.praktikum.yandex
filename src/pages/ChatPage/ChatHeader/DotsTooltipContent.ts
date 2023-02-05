@@ -10,19 +10,25 @@ import {
   leaveIcon,
   garbageIcon,
 } from '$iconsTemplates';
-import { selectCurrentChat, store } from '$store';
+import { selectCurrentChat, store, type StoreState } from '$store';
 import { AddUserModalContent } from '../AddUserModalContent';
 import { DeleteUserModalContent } from '../DeleteUserModalContent';
 import { DeleteChatModalContent } from '../DeleteChatModalContent';
 import { LeaveChatModalContent } from '../LeaveChatModalContent';
 
+type MenuPermissions = {
+  addUser: boolean;
+  deleteUser: boolean;
+  leaveChat: boolean;
+  deleteChat: boolean;
+};
+
 export class DotsTooltipContent extends Block {
   constructor() {
-    const storeState = store.getState();
-    const currentChat = selectCurrentChat(storeState);
-    const isCreatorOfChat =
-      !!currentChat && storeState.user?.id === currentChat?.creatorId;
+    super({ isAddUserModalVisible: false }, {});
+  }
 
+  createTooltipMenu = (permissions: MenuPermissions) => {
     const addUserModal = new Modal({
       isActive: false,
       slot: AddUserModalContent,
@@ -50,28 +56,28 @@ export class DotsTooltipContent extends Block {
     });
 
     const menuItems = [
-      {
+      permissions.addUser && {
         name: 'Add user',
         iconTemplate: circledPlusIcon,
         events: {
           click: () => addUserModal.setProp('isActive', true),
         },
       },
-      isCreatorOfChat && {
+      permissions.deleteUser && {
         name: 'Delete user',
         iconTemplate: circledCrossIcon,
         events: {
           click: () => deleteUserModal.setProp('isActive', true),
         },
       },
-      {
+      permissions.leaveChat && {
         name: 'Leave chat',
         iconTemplate: leaveIcon,
         events: {
           click: () => leaveChatModal.setProp('isActive', true),
         },
       },
-      isCreatorOfChat && {
+      permissions.deleteChat && {
         name: 'Delete chat',
         iconTemplate: garbageIcon,
         events: {
@@ -81,14 +87,28 @@ export class DotsTooltipContent extends Block {
     ].filter(Boolean) as TooltipMenuProps['items'];
 
     const menu = new TooltipMenu({ items: menuItems });
+    this.setProp('children', { menu });
+  };
 
-    super(
-      {
-        isAddUserModalVisible: false,
-        children: { menu },
-      },
-      {}
-    );
+  connectToStore = (storeState: Partial<StoreState>) => {
+    const currentChat = selectCurrentChat(storeState);
+    const isCreatorOfChat =
+      !!currentChat && storeState.user?.id === currentChat?.creatorId;
+
+    this.createTooltipMenu({
+      addUser: true,
+      deleteUser: isCreatorOfChat,
+      leaveChat: true,
+      deleteChat: isCreatorOfChat,
+    });
+  };
+
+  componentDidMount() {
+    store.subscribeWithImmediateCall(this.connectToStore);
+  }
+
+  componentWillUnmount() {
+    store.unsubscribe(this.connectToStore);
   }
 
   render() {

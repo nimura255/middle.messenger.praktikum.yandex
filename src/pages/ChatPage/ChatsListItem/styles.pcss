@@ -67,11 +67,7 @@
     }
   }
 
-  &::after {
+  &:has(+&)::after {
     @mixin bottom-separator-line;
-  }
-
-  &:last-child::after {
-    display: none;
   }
 }
