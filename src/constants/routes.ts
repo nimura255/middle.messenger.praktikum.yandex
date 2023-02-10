@@ -5,4 +5,5 @@ export const routes = {
   changeInfo: '/settings/change-info',
   changePassword: '/settings/change-password',
   messenger: '/messenger',
+  error500: '/500',
 };
