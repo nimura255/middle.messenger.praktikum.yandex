@@ -1,7 +1,7 @@
 import { ButtonWithChevron } from '$components/ButtonWithChevron';
 import { IconButton } from '$components/IconButton';
 import { Modal } from '$components/Modal';
-import { SearchInput } from '$components/SearchInput';
+import { SearchInputSkeleton } from '$components/SearchInput';
 import { routes } from '$constants/routes';
 import { Block } from '$core/Block';
 import { Link } from '$core/router';
@@ -36,9 +36,7 @@ export class ChatsListColumn extends Block {
         click: () => newChatModal.setProp('isActive', true),
       },
     });
-    const searchInput = new SearchInput({
-      placeholder: 'Search',
-    });
+    const searchInput = new SearchInputSkeleton();
     const chatsList = new ChatsList();
 
     super(
