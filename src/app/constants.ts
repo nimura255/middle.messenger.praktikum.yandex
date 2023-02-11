@@ -1,11 +1,12 @@
 import { routes } from '$constants/routes';
 import { ChatPage } from '$pages/ChatPage';
+import { Fallback404Page } from '$pages/Fallback404Page';
+import { Fallback500Page } from '$pages/Fallback500Page';
 import { SignInPage } from '$pages/SignInPage';
 import { SignUpPage } from '$pages/SignUpPage';
 import { ProfilePage } from '$pages/ProfilePage';
 import { ProfileEditPage } from '$pages/ProfileEditPage';
 import { ProfilePasswordChangePage } from '$pages/ProfilePasswordChangePage';
-import { Fallback404Page } from '$pages/Fallback404Page';
 
 export const authOnlyRoutes = [
   routes.messenger,
@@ -39,6 +40,10 @@ export const routerRoutesList = [
   {
     path: routes.changePassword,
     block: ProfilePasswordChangePage,
+  },
+  {
+    path: routes.error500,
+    block: Fallback500Page,
   },
   {
     path: '/*',

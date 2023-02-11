@@ -1,6 +1,7 @@
+import { chatsController } from '$controllers/chats';
 import { ChatSocket } from '$controllers/webSocket';
 import { Block } from '$core/Block';
-import { store } from '$store';
+import { store, type StoreState } from '$store/appStore';
 import { ChatHeader } from '../ChatHeader';
 import { MessagesList } from '../MessagesList';
 import {
@@ -10,57 +11,83 @@ import {
 
 export class CurrentChatScreen extends Block {
   chatSocket: ChatSocket | undefined;
+  chatHeader: ChatHeader;
   messageInputForm: MessageInputForm;
   messagesList: MessagesList;
 
   constructor() {
-    const chatHeader = new ChatHeader();
-    const messageInputForm = new MessageInputForm({});
-    const messagesList = new MessagesList({});
+    super({ children: {} }, {});
 
-    super(
-      {
-        children: {
-          chatHeader,
-          messageInputForm,
-          messagesList,
-        },
-      },
-      {}
-    );
+    this.chatHeader = new ChatHeader();
+    this.messageInputForm = new MessageInputForm({});
+    this.messagesList = new MessagesList({});
 
-    this.messageInputForm = messageInputForm;
-    this.messagesList = messagesList;
+    this.messageInputForm.setProp('onSubmit', this.onMessageSubmit);
+    this.messagesList.setProp('onLoadPrev', this.onLoadPrev);
   }
 
-  componentDidMount() {
-    const { currentChatId, user, currentChatToken } = store.getState();
+  onMessageSubmit: MessageInputFormProps['onSubmit'] = (data) => {
+    this.chatSocket?.sendMessage({
+      text: data.text,
+    });
+  };
+
+  onLoadPrev = () => {
+    return this.chatSocket?.requestPrevMessages();
+  };
+
+  displayChatScreen = (currentChatId: number) => {
+    this.setProps({
+      currentChatId,
+      children: {
+        chatHeader: this.chatHeader,
+        messageInputForm: this.messageInputForm,
+        messagesList: this.messagesList,
+      },
+    });
+  };
+
+  hideChatScreen = () => {
+    this.setProps({
+      currentChatId: undefined,
+      children: {},
+    });
+  };
+
+  connectToStore = (storeState: Partial<StoreState>) => {
+    const { currentChatId, currentChatToken, user } = storeState;
     const usedId = user?.id;
 
-    if (!(currentChatId && usedId && currentChatToken)) {
+    if (this.props.currentChatId === currentChatId) {
       return;
     }
 
-    const chatSocket = new ChatSocket();
-    chatSocket.connectToCurrentChat({
-      chatId: currentChatId,
-      userId: usedId,
-      token: currentChatToken,
-    });
-    this.chatSocket = chatSocket;
+    if (this.chatSocket) {
+      this.chatSocket.disconnectFromChat();
+    }
 
-    const onMessageSubmit: MessageInputFormProps['onSubmit'] = (data) => {
-      chatSocket.sendMessage({
-        text: data.text,
+    if (currentChatId && usedId && currentChatToken) {
+      this.chatSocket = new ChatSocket();
+      this.chatSocket.connectToCurrentChat({
+        chatId: currentChatId,
+        userId: usedId,
+        token: currentChatToken,
       });
-    };
-    const onLoadPrev = () => chatSocket.requestPrevMessages();
 
-    this.messageInputForm.setProp('onSubmit', onMessageSubmit);
-    this.messagesList.setProp('onLoadPrev', onLoadPrev);
+      this.displayChatScreen(currentChatId);
+      chatsController.updateCurrentChatNewMessagesCount({ count: 0 });
+    } else {
+      this.hideChatScreen();
+    }
+  };
+
+  componentDidMount() {
+    store.subscribeWithImmediateCall(this.connectToStore);
   }
 
   componentWillUnmount() {
+    store.unsubscribe(this.connectToStore);
+
     if (this.chatSocket) {
       this.chatSocket.disconnectFromChat();
     }
@@ -69,9 +96,17 @@ export class CurrentChatScreen extends Block {
   render() {
     return `
       <main class="mfm-chat-page__chat-column">
-        {{{chatHeader}}}
-        {{{messagesList}}}
-        {{{messageInputForm}}}
+        {{#if currentChatId}}
+          {{{chatHeader}}}
+          {{{messagesList}}}
+          {{{messageInputForm}}}
+        {{else}}
+          <div class="mfm-chat-page__placeholder">
+            <p class="mfm-typography__text_m">
+              Select a chat to start messaging
+            </p>
+          </div>
+        {{/if}}
       </main>
     `;
   }

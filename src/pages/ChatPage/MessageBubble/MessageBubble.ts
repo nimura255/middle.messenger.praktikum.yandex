@@ -1,6 +1,6 @@
 import { Block } from '$core/Block';
 import { doubleCheckMarkIcon } from '$iconsTemplates';
-import { formatMessageDateString } from '$utils/date';
+import { extractReadableTime } from '$utils/date';
 import type { MessageBubbleProps } from './types';
 import './style.pcss';
 
@@ -9,7 +9,7 @@ export class MessageBubble extends Block {
     super(
       {
         ...props,
-        time: formatMessageDateString(props.time),
+        time: extractReadableTime(new Date(props.time)),
         authorName: props.own ? '' : props.authorName,
       },
       {}

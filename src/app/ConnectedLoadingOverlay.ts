@@ -1,25 +1,28 @@
 import { LoadingOverlay } from '$components/LoadingOverlay';
 import { Block } from '$core/Block';
+import { Portal } from '$core/Portal';
 import { store, type StoreState } from '$store';
 
 export class ConnectedLoadingOverlay extends Block {
-  constructor() {
-    const loadingIndicator = new LoadingOverlay();
+  loadingOverlay: LoadingOverlay;
 
-    super(
-      {
-        isVisible: true,
-        children: { slot: loadingIndicator },
-      },
-      {}
-    );
+  constructor() {
+    super({}, {});
+
+    this.loadingOverlay = new LoadingOverlay();
   }
 
   connectToStore = (storeState: Partial<StoreState>) => {
     const { showLoadingSpinner } = storeState;
 
-    if (showLoadingSpinner !== this.props.isVisible) {
-      this.setProp('isVisible', showLoadingSpinner);
+    if (showLoadingSpinner) {
+      const portal = new Portal({
+        slot: this.loadingOverlay,
+      }) as unknown as Block;
+
+      this.setProp('children', { slot: portal });
+    } else {
+      this.setProp('children', {});
     }
   };
 
@@ -32,12 +35,6 @@ export class ConnectedLoadingOverlay extends Block {
   }
 
   render() {
-    return `
-      <div>
-        {{#if isVisible}}
-          {{{slot}}}
-        {{/if}}
-      </div>
-    `;
+    return `<div>{{{slot}}}</div>`;
   }
 }

@@ -7,7 +7,9 @@ import {
   type ChatStoreState,
   type Message,
 } from '$store';
+import { isSameDay } from '$utils/date';
 import { MessageBubble } from '../MessageBubble';
+import { MessagesListDateMarker } from '../MessagesListDateMarker';
 import type { MessagesListProps } from './types';
 
 export class MessagesList extends Block {
@@ -49,14 +51,30 @@ export class MessagesList extends Block {
     const { user } = store.getState();
     const userId = user?.id;
 
-    const bubbles = messages.map((messageData) => {
-      return new MessageBubble({
-        messageText: messageData.text,
-        time: messageData.time,
-        own: userId === messageData.user_id,
-        authorName: messageData.authorName,
-      });
+    const bubbles: (MessageBubble | MessagesListDateMarker)[] = [];
+
+    messages.forEach((messageData, index) => {
+      const nextMessageDate = messages[index + 1];
+
+      bubbles.push(
+        new MessageBubble({
+          messageText: messageData.text,
+          time: messageData.time,
+          own: userId === messageData.user_id,
+          authorName: messageData.authorName,
+        })
+      );
+
+      if (
+        !nextMessageDate ||
+        !isSameDay(nextMessageDate.time, messageData.time)
+      ) {
+        bubbles.push(
+          new MessagesListDateMarker({ date: messageData.time })
+        );
+      }
     });
+
     const { template: bubblesTemplate, children } =
       makeChildrenFromList(bubbles);
 

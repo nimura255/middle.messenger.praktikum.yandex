@@ -23,7 +23,7 @@ export class EventBus<
     const listeners = this.listeners[event];
 
     if (!listeners?.length) {
-      throw new Error(`Нет события: ${event}`);
+      throw new Error(`No listeners for event ${event}`);
     }
 
     this.listeners[event] = listeners.filter(
@@ -34,7 +34,7 @@ export class EventBus<
   emit<EventKey extends E = E>(event: EventKey, ...args: M[EventKey]) {
     const listeners = this.listeners[event];
 
-    if (!listeners) {
+    if (!listeners?.length) {
       return;
     }
 

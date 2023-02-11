@@ -1,27 +1,50 @@
-import { chatsAPI } from '$api/chats';
+import { chatsAPI, type ChatUserInfo } from '$api/chats';
 import { userAPI } from '$api/user';
-import { chatStore, store } from '$store';
+import { selectChat, store } from '$store/appStore';
+import { chatStore } from '$store/chatStore';
 import { adaptChatsListItems, deleteChatFromStore } from './utils';
 import type {
   AddUserToCharParams,
   CreateChatParams,
   DeleteUserFromChatParams,
   GetChatsParams,
-  SearchCurrentChatUsersParams,
   SelectChatParams,
+  UpdateChatLastMessageParams,
+  UpdateChatNewMessagesCountParams,
 } from './types';
 
 export const chatsController = {
   async createChat(params: CreateChatParams): Promise<void> {
-    await chatsAPI.createChat(params);
-    await this.getChats({
-      offset: 0,
-      limit: 10,
-    });
+    const { id } = await chatsAPI.createChat(params);
+
+    const storeState = store.getState();
+    const { user, chats: currentChatsList } = storeState;
+    const creatorId = user?.id;
+
+    if (typeof creatorId === 'number') {
+      const newChat = { id, chatName: params.title, creatorId };
+      const newChatsList = currentChatsList
+        ? [newChat, ...currentChatsList]
+        : [newChat];
+
+      store.setByKey('chats', newChatsList);
+    }
   },
   async getChats(params: GetChatsParams) {
     const newChats = await chatsAPI.getChats(params);
-    store.setByKey('chats', adaptChatsListItems(newChats));
+    const adaptedNewChats = adaptChatsListItems(newChats);
+
+    const currentChatsList = store.getState().chats;
+    const newChatsList = currentChatsList
+      ? [...currentChatsList, ...adaptChatsListItems(newChats)]
+      : adaptedNewChats;
+
+    store.setByKey('chats', newChatsList);
+
+    const { limit } = params;
+    const isEndOfList = !newChats.length || (limit || 0) > newChats.length;
+
+    return { isEndOfList };
   },
   async addUserToChat(params: AddUserToCharParams): Promise<string> {
     const { chatId, username } = params;
@@ -39,21 +62,6 @@ export const chatsController = {
     });
 
     return '';
-  },
-  async searchCurrentChatUsers(params?: SearchCurrentChatUsersParams) {
-    const { currentChatId, user } = store.getState();
-    const currentUserId = user?.id;
-
-    if (!currentChatId) {
-      return;
-    }
-
-    const searchResult = await chatsAPI.searchChatUsers({
-      chatId: currentChatId,
-      ...params,
-    });
-
-    return searchResult.filter(({ id }) => id !== currentUserId);
   },
   async deleteUserFromChat(params: DeleteUserFromChatParams) {
     const { currentChatId } = store.getState();
@@ -106,7 +114,7 @@ export const chatsController = {
       return;
     }
 
-    const chatUsers = await chatsAPI.searchChatUsers({
+    const chatUsers = await this.getAllUsersOfChat({
       chatId: params.chatId,
     });
     const { token } = await chatsAPI.connectToChat(params);
@@ -125,5 +133,78 @@ export const chatsController = {
       users: filteredChatUsers,
       messages: [],
     });
+  },
+  async getAllUsersOfChat(params: { chatId: number }) {
+    let hasReachedEnd = false;
+    const limit = 20;
+    const users: ChatUserInfo[] = [];
+
+    while (!hasReachedEnd) {
+      const portion = await chatsAPI.searchChatUsers({
+        chatId: params.chatId,
+        offset: users.length,
+        limit,
+      });
+
+      users.push(...portion);
+
+      if (portion.length < limit) {
+        hasReachedEnd = true;
+      }
+    }
+
+    return users;
+  },
+  updateChatLastMessage(params: UpdateChatLastMessageParams) {
+    const storeState = store.getState();
+    const { chats, user } = storeState;
+    const requiredChat = selectChat(params.chatId, storeState);
+
+    if (!chats || !requiredChat) {
+      return;
+    }
+
+    requiredChat.lastMessage = params.lastMessage;
+    requiredChat.lastMessageTime = params.lastMessageTime;
+    requiredChat.isLastMessageOwn = params.lastMessageUserId === user?.id;
+
+    store.setByKey('chats', [...chats]);
+  },
+  updateChatNewMessagesCount(params: UpdateChatNewMessagesCountParams) {
+    const storeState = store.getState();
+    const { chats } = storeState;
+    const requiredChat = selectChat(params.chatId, storeState);
+
+    if (!chats || !requiredChat) {
+      return;
+    }
+
+    requiredChat.newMessagesCount = params.count;
+    store.setByKey('chats', [...chats]);
+  },
+  updateCurrentChatLastMessage(
+    params: Omit<UpdateChatLastMessageParams, 'chatId'>
+  ) {
+    const { currentChatId } = store.getState();
+
+    if (typeof currentChatId === 'number') {
+      this.updateChatLastMessage({
+        ...params,
+        chatId: currentChatId,
+      });
+    }
+  },
+  updateCurrentChatNewMessagesCount(
+    params: Omit<UpdateChatNewMessagesCountParams, 'chatId'>
+  ) {
+    const { count } = params;
+    const { currentChatId } = store.getState();
+
+    if (typeof currentChatId === 'number') {
+      this.updateChatNewMessagesCount({
+        chatId: currentChatId,
+        count,
+      });
+    }
   },
 };

@@ -1,1 +1,0 @@
-export { ChatColumnPlaceholder } from './ChatColumnPlaceholder';

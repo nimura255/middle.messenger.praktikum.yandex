@@ -1,17 +1,12 @@
 import { Block, createRef } from '$core/Block';
 import { ArrowButton } from '$components/ArrowButton';
-import { clipIcon } from '$iconsTemplates';
 import { extractDataFromSubmitEvent } from '$utils/form';
 import { validateRequired, ValidationManager } from '$utils/validation';
-import { MessageFormActionButton } from '../MessageFormActionButton';
 import { MessageInput } from '../MessageInput';
 import type { MessageInputFormProps } from './types';
 
 export class MessageInputForm extends Block {
   constructor(props: MessageInputFormProps) {
-    const attachmentButton = new MessageFormActionButton({
-      iconTemplate: clipIcon,
-    });
     const sendButton = new ArrowButton({
       direction: 'right',
       type: 'submit',
@@ -59,7 +54,6 @@ export class MessageInputForm extends Block {
     const propsWithChildren = {
       ...props,
       children: {
-        attachmentButton,
         messageInput,
         sendButton,
       },
@@ -72,7 +66,6 @@ export class MessageInputForm extends Block {
   render(): string {
     return `
       <form class="mfm-chat-page__chat-column__message-input-form">
-        {{{attachmentButton}}}
         {{{messageInput}}}
         {{{sendButton}}}
       </form>

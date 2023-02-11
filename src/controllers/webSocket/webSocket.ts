@@ -1,5 +1,6 @@
 import { wsRoot } from '$constants/apiRoots';
-import { chatStore, type ChatStoreState } from '$store';
+import { chatsController } from '$controllers/chats';
+import { chatStore, type ChatStoreState } from '$store/chatStore';
 import { urlJoin } from '$utils/url';
 import { messagesListPageSize, pingInterval } from './constants';
 import {
@@ -141,11 +142,17 @@ export class ChatSocket {
       const { user_id } = message as SocketChatMessage;
       const { messages } = chatStore.getState();
       const authorName = this.chatUsersMap.get(user_id);
+      const adaptedMessage = adaptMessageForStore(
+        message as SocketChatMessage,
+        authorName
+      );
 
-      chatStore.setByKey('messages', [
-        adaptMessageForStore(message as SocketChatMessage, authorName),
-        ...messages,
-      ]);
+      chatStore.setByKey('messages', [adaptedMessage, ...messages]);
+      chatsController.updateCurrentChatLastMessage({
+        lastMessageUserId: user_id,
+        lastMessage: adaptedMessage.text,
+        lastMessageTime: adaptedMessage.time,
+      });
 
       return;
     }

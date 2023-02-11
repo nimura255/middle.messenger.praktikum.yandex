@@ -115,6 +115,7 @@
       "$pages": ["pages"],
       "$pages/*": ["pages/*"],
       "$store": ["store"],
+      "$store/*": ["store/*"],
       "$utils": ["utils"],
       "$utils/*": ["utils/*"]
     }

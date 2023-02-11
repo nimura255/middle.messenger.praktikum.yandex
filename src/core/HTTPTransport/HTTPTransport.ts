@@ -1,21 +1,13 @@
 import { apiRoot } from '$constants/apiRoots';
 import { isObject } from '$utils/objects';
 import { urlJoin } from '$utils/url';
-import { queryStringify } from './utils';
+import { parseResponse, queryStringify } from './utils';
 import { HTTPMethod, type Response, type RequestOptions } from './types';
-
-function parseResponse(responseString: string) {
-  try {
-    return JSON.parse(responseString);
-  } catch {
-    return responseString;
-  }
-}
 
 export class HTTPTransport {
   private readonly baseUrl: string;
 
-  constructor(routePrefix: string) {
+  constructor(routePrefix = '') {
     this.baseUrl = urlJoin(apiRoot, routePrefix);
   }
 
@@ -59,7 +51,7 @@ export class HTTPTransport {
     );
   };
 
-  request = <Data>(
+  private request = <Data>(
     route: string,
     options: RequestOptions = {},
     timeout = 5000
